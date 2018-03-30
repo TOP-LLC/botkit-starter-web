@@ -19,11 +19,13 @@ module.exports = function(Botkit, config) {
         {
           message: {
             text: message.text,
-            userId: message.publisher
+            userId: message.publisher,
+            user: "TOP bot",
+            type: "message_bot"
           },
           channel: message.channel,
           sendByPost: false, // true to send via post
-          storeInHistory: false, //override default storage options
+          storeInHistory: true, //override default storage options
           meta: {
             botReply: true
           } // publish extra meta with the request
@@ -84,13 +86,23 @@ module.exports = function(Botkit, config) {
   // and ensure that the key botkit fields are present -- user, channel, text, and type
   controller.middleware.normalize.use(function(bot, message, next) {
     console.log("NORMALIZE", message)
-    message.subscription = "subscriptiongoeshere"
-    message.type = "message_received"
-    message.channel = message.raw_message.channel
-    message.text = message.raw_message.message.text
-    message.user = message.raw_message.publisher
-    console.log("Message after normalizing is ", message)
-    next()
+    if (message.message.type === "message_bot") {
+      console.log("Message type bot, don't change")
+      message.subscription = "subscriptiongoeshere"
+      message.type = "ambient"
+      message.channel = message.raw_message.channel
+      message.text = message.raw_message.message.text
+      message.user = message.raw_message.publisher
+      next()
+    } else {
+      console.log("Message received type")
+      message.subscription = "subscriptiongoeshere"
+      message.type = "message_received"
+      message.channel = message.raw_message.channel
+      message.text = message.raw_message.message.text
+      message.user = message.raw_message.publisher
+      next()
+    }
   })
 
   controller.middleware.receive.use(function(bot, message, next) {
@@ -153,7 +165,7 @@ module.exports = function(Botkit, config) {
     console.log("Subscribing..")
 
     client.subscribe({
-      channels: ["hello_world"],
+      channels: ["Channel-Test"],
       withPresence: true
     })
   }

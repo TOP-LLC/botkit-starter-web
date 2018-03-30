@@ -66,44 +66,44 @@ console.log(
 // If a trigger is matched, the conversation will automatically fire!
 // You can tie into the execution of the script using the functions
 // controller.studio.before, controller.studio.after and controller.studio.validate
-// if (process.env.studio_token) {
-//   controller.on("message_received", function(bot, message) {
-//     console.log("studio running ", message)
-//     controller.studio
-//       .runTrigger(bot, message.text, message.user, message.channel, message)
-//       .then(function(convo) {
-//         console.log("Ran studio trigger")
-//         if (!convo) {
-//           console.log("No convo found")
-//           // web bot requires a response of some kind!
-//           //   bot.reply(message, "OK")
-//           // no trigger was matched
-//           // If you want your bot to respond to every message,
-//           // define a 'fallback' script in Botkit Studio
-//           // and uncomment the line below.
-//           // controller.studio.run(bot, 'fallback', message.user, message.channel, message);
-//           //   bot.reply(message, "OK")
-//         } else {
-//           // set variables here that are needed for EVERY script
-//           // use controller.studio.before('script') to set variables specific to a script
-//           console.log("convo found")
-//         }
-//       })
-//       .catch(function(err) {
-//         bot.reply(
-//           message,
-//           "I experienced an error with a request to Botkit Studio: " + err
-//         )
-//         debug("Botkit Studio: ", err)
-//       })
-//   })
-// } else {
-//   console.log("~~~~~~~~~~")
-//   console.log("NOTE: Botkit Studio functionality has not been enabled")
-//   console.log(
-//     "To enable, pass in a studio_token parameter with a token from https://studio.botkit.ai/"
-//   )
-// }
+if (process.env.studio_token) {
+  controller.on("message_received", function(bot, message) {
+    console.log("studio running ", message)
+    controller.studio
+      .runTrigger(bot, message.text, message.user, message.channel, message)
+      .then(function(convo) {
+        console.log("Ran studio trigger")
+        if (!convo) {
+          console.log("No convo found")
+          // web bot requires a response of some kind!
+          //   bot.reply(message, "OK")
+          // no trigger was matched
+          // If you want your bot to respond to every message,
+          // define a 'fallback' script in Botkit Studio
+          // and uncomment the line below.
+          // controller.studio.run(bot, 'fallback', message.user, message.channel, message);
+          //   bot.reply(message, "OK")
+        } else {
+          // set variables here that are needed for EVERY script
+          // use controller.studio.before('script') to set variables specific to a script
+          console.log("convo found")
+        }
+      })
+      .catch(function(err) {
+        bot.reply(
+          message,
+          "I experienced an error with a request to Botkit Studio: " + err
+        )
+        debug("Botkit Studio: ", err)
+      })
+  })
+} else {
+  console.log("~~~~~~~~~~")
+  console.log("NOTE: Botkit Studio functionality has not been enabled")
+  console.log(
+    "To enable, pass in a studio_token parameter with a token from https://studio.botkit.ai/"
+  )
+}
 
 function usage_tip() {
   console.log("~~~~~~~~~~")
