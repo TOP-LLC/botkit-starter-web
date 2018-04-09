@@ -15,13 +15,13 @@ module.exports = function(Botkit, config) {
     // the message object should be in the proper format already
     bot.send = function(message, cb) {
       console.log("SEND: ", message)
+
       bot.client.publish(
         {
           message: {
             text: message.text,
             userId: message.publisher,
-            user: "TOP bot",
-            type: "message_bot"
+            user: "TOP bot"
           },
           channel: message.channel,
           sendByPost: false, // true to send via post
@@ -34,11 +34,13 @@ module.exports = function(Botkit, config) {
           if (status.error) {
             // handle error
             console.log(status)
+            cb(status)
           } else {
             console.log("message Published w/ timetoken", response.timetoken)
           }
         }
       )
+      cb()
     }
 
     // this function takes an incoming message (from a user) and an outgoing message (reply from bot)
@@ -51,12 +53,13 @@ module.exports = function(Botkit, config) {
         }
       }
       resp.channel = src.channel
-      bot.send(resp, cb)
+      bot.say(resp, cb)
     }
 
     // this function defines the mechanism by which botkit looks for ongoing conversations
     // probably leave as is!
     bot.findConversation = function(message, cb) {
+      console.log("Finding conversation")
       for (var t = 0; t < botkit.tasks.length; t++) {
         for (var c = 0; c < botkit.tasks[t].convos.length; c++) {
           if (
@@ -64,18 +67,19 @@ module.exports = function(Botkit, config) {
             botkit.tasks[t].convos[c].source_message.user == message.user &&
             botkit.excludedEvents.indexOf(message.type) == -1 // this type of message should not be included
           ) {
+            console.log("Doing some weird function I don't understand")
             cb(botkit.tasks[t].convos[c])
             return
           }
         }
       }
+      console.log("Running callback at the end of findConversation")
       cb()
     }
 
     bot.client = new PubNub({
       subscribeKey: "sub-c-c574e958-3357-11e8-a409-76cf0979147a",
       publishKey: "pub-c-3185f8fa-be4a-48d3-9091-da974f093b00",
-      secretKey: "sec-c-MjNhOWVlZGUtYzYwMC00ZDcyLWJjZmItOWYxYjM5MTkzZTgx",
       ssl: true
     })
 
@@ -96,7 +100,6 @@ module.exports = function(Botkit, config) {
       next()
     } else {
       console.log("Message received type")
-      message.subscription = "subscriptiongoeshere"
       message.type = "message_received"
       message.channel = message.raw_message.channel
       message.text = message.raw_message.message.text
@@ -105,22 +108,9 @@ module.exports = function(Botkit, config) {
     }
   })
 
-  controller.middleware.receive.use(function(bot, message, next) {
-    console.log("RECEIVED ", message)
-
-    next()
-  })
-
   controller.middleware.capture.use(function(bot, message, next) {
     // log the outgoing message for debugging purposes
     console.log("CAPTURED ", message)
-
-    next()
-  })
-
-  controller.middleware.send.use(function(bot, message, next) {
-    // log the outgoing message for debugging purposes
-    console.log("SENDING ", message)
 
     next()
   })
@@ -140,7 +130,10 @@ module.exports = function(Botkit, config) {
     platform_message,
     next
   ) {
-    console.log("Format is ", platform_message)
+    platform_message.text = message.text
+    platform_message.channel = message.channel
+    platform_message.continue_type = message.continue_typing
+    platform_message.sent_timestamp = message.sent_timestamp
     next()
   })
 
@@ -151,13 +144,15 @@ module.exports = function(Botkit, config) {
     client = new PubNub({
       subscribeKey: "sub-c-c574e958-3357-11e8-a409-76cf0979147a",
       publishKey: "pub-c-3185f8fa-be4a-48d3-9091-da974f093b00",
-      secretKey: "sec-c-MjNhOWVlZGUtYzYwMC00ZDcyLWJjZmItOWYxYjM5MTkzZTgx",
       ssl: true
     })
 
     client.addListener({
       message: function(message) {
         console.log("New Message!", message)
+        if (message.message.user === "TOP bot") {
+          return console.log("IGNORE ME I AM A BOT")
+        }
         controller.ingest(bot, message, null)
       }
     })
@@ -165,7 +160,7 @@ module.exports = function(Botkit, config) {
     console.log("Subscribing..")
 
     client.subscribe({
-      channels: ["Channel-Test"],
+      channelGroups: ["Bot"],
       withPresence: true
     })
   }

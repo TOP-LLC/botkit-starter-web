@@ -46,15 +46,15 @@ controller.metrics = require("botkit-studio-metrics")(controller)
 // // Open the web socket server
 controller.subscribeToChannels()
 
-// // // Start the bot brain in motion!!
-controller.startTicking()
-
 var normalizedPath = require("path").join(__dirname, "skills")
 require("fs")
   .readdirSync(normalizedPath)
   .forEach(function(file) {
     require("./skills/" + file)(controller)
   })
+
+// Start the bot brain in motion!!
+controller.startTicking()
 
 console.log(
   "I AM ONLINE! COME TALK TO ME: http://localhost:" + (process.env.PORT || 3000)
@@ -76,13 +76,19 @@ if (process.env.studio_token) {
         if (!convo) {
           console.log("No convo found")
           // web bot requires a response of some kind!
-          //   bot.reply(message, "OK")
+          // bot.reply(message, "OK")
           // no trigger was matched
           // If you want your bot to respond to every message,
           // define a 'fallback' script in Botkit Studio
           // and uncomment the line below.
-          // controller.studio.run(bot, 'fallback', message.user, message.channel, message);
-          //   bot.reply(message, "OK")
+          // controller.studio.run(
+          //   bot,
+          //   "fallback",
+          //   message.user,
+          //   message.channel,
+          //   message
+          // )
+          // bot.reply(message, "OK")
         } else {
           // set variables here that are needed for EVERY script
           // use controller.studio.before('script') to set variables specific to a script

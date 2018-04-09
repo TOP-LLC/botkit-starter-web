@@ -40,17 +40,7 @@ module.exports = function(controller) {
 
   //   Outgoing middleware
 
-  controller.middleware.send.use(function(bot, message, next) {
-    // log the outgoing message for debugging purposes
-    console.log("SEND ", message)
-
-    next()
-  })
-
-  controller.middleware.format.use(function(bot, message, next) {
-    // log the outgoing message for debugging purposes
-    console.log("FORMAT ", message)
-
-    next()
+  controller.on("message_received", function(bot, message) {
+    console.log("Does this fire after message received?")
   })
 }
