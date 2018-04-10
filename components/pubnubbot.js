@@ -1,10 +1,10 @@
-var PubNub = require("pubnub")
+const PubNub = require("pubnub")
 
 module.exports = function(Botkit, config) {
-  var controller = Botkit.core(config)
+  const controller = Botkit.core(config)
 
   controller.defineBot(function(botkit, config) {
-    var bot = {
+    const bot = {
       type: "pubnubapi",
       botkit: botkit,
       config: config || {},
@@ -141,7 +141,7 @@ module.exports = function(Botkit, config) {
   controller.subscribeToChannels = function() {
     var bot = controller.spawn({})
 
-    client = new PubNub({
+    const client = new PubNub({
       subscribeKey: "sub-c-c574e958-3357-11e8-a409-76cf0979147a",
       publishKey: "pub-c-3185f8fa-be4a-48d3-9091-da974f093b00",
       ssl: true
