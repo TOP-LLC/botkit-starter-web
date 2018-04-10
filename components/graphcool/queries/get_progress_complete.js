@@ -26,9 +26,6 @@ module.exports = function (psid) {
           programs {
             id
           }
-          activities {
-            id
-          }
         }
       }
     }
