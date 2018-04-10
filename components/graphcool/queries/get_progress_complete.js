@@ -1,6 +1,6 @@
 const lokkaClient = require('./../../lokka_graphcool.js');
 
-module.exports = function (psid) {
+module.exports = (psid) => {
   console.log('Running progressComplete query with ID ', psid);
 
   // Query for Training Message
@@ -9,6 +9,8 @@ module.exports = function (psid) {
     query {
       User (id: "${psid}") {
         id
+        firstName
+        lastName
         progressComplete {
           id
           sprints {

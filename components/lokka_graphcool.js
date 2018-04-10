@@ -1,8 +1,9 @@
 // Lokka client for Graphcool hookup
 const Lokka = require('lokka').Lokka;
 const Transport = require('lokka-transport-http').Transport;
+const debug = require('debug')('botkit:lokka');
 
-console.log('Preparing lokka client with env: ', process.env.NODE_ENV);
+debug('Preparing lokka client with env: ', process.env.NODE_ENV);
 
 const GQL_AUTH_TOKEN = process.env.GQL_AUTH_TOKEN_DEV;
 

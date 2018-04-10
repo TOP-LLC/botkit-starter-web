@@ -29,7 +29,6 @@ module.exports = function(controller) {
       if (message.type == "message" || message.type == "message_received") {
         controller.storage.history
           .addToHistory(message, message.user)
-          .then(response => console.log("Response: ", response))
           .catch(function(err) {
             console.log("Error storing history: ", err)
             console.error("Error storing history: ", err)
@@ -50,7 +49,6 @@ module.exports = function(controller) {
         }
         logMessage(message, user)
       })
-      console.log("Calling next ")
       next()
     })
 
