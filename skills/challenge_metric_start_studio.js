@@ -5,13 +5,13 @@ const debug = require('debug')('botkit:challenge_metric_start_studio');
 
 // Refactor for serverless function
 
-module.exports = function (controller) {
+module.exports = (controller) => {
   controller.hears(['challenge_metric_start'], ['message_received'], (bot, message) => {
     // format all variables for conversation
     function formatAttachment(progressCurrent) {
       console.log('Query response from progressCurrent is ', JSON.stringify(progressCurrent));
 
-      const challenge = progressCurrent.User.progressCurrent.challenge;
+      const {challenge} = progressCurrent.User.progressCurrent;
       console.log('Challenge is ', challenge);
 
       const data = {
@@ -91,13 +91,13 @@ module.exports = function (controller) {
     console.log('Executing challenge_metric_start');
 
     return getAllChallenges()
-    .then(result => {
-      console.log('Finished running all challenges script', result)
-      return result 
-    })
-    .catch(error => {
-      debug('error at getAllChallenges: ', error)
-    })
+      .then((result) => {
+        console.log('Finished running all challenges script', result);
+        return result;
+      })
+      .catch((error) => {
+        debug('error at getAllChallenges: ', error);
+      });
   });
 
   /* Validators */
@@ -113,6 +113,30 @@ module.exports = function (controller) {
     // can call convo.gotoThread() to change direction of conversation
 
     console.log('VALIDATE: challenge_metric_start VARIABLE: string_question_1');
+
+    // always call next!
+    next();
+  });
+
+  // Validate user input: string_question_2
+  controller.studio.validate('challenge_metric_start', 'string_question_2', (convo, next) => {
+    const value = convo.extractResponse('string_question_2');
+
+    if (value.attachments !== null) {
+      if (value.attachments[0].type === "image") {
+        console.log("Response type is ", JSON.stringify(response))
+        answers["upload"] = response.attachments[0].payload.url
+        convo.next();
+      } else {
+        convo.say("Hmm, I don't recognize that image. Can you try again?")
+        convo.repeat();
+      }
+    }
+
+    // test or validate value somehow
+    // can call convo.gotoThread() to change direction of conversation
+
+    console.log('VALIDATE: challenge_metric_start VARIABLE: string_question_2');
 
     // always call next!
     next();
@@ -135,7 +159,14 @@ module.exports = function (controller) {
   controller.studio.validate('challenge_metric_start', 'challenge_accept', (convo, next) => {
     console.log('Validating challenge_accept');
     const value = convo.extractResponse('challenge_accept');
+    const { answerType } = convo.vars.challenge.activities[0];
 
+    if (answerType[0] === 'String') {
+      convo.setVar('question1', convo.vars.challenge.activities[0].questions[0]);
+      return convo.gotoThread('string_challenge_type');
+    } else if (answerType[1] === 'Image') {
+      return convo.gotoThread('image_challenge_type');
+    }
     // test or validate value somehow
     // can call convo.gotoThread() to change direction of conversation
 

@@ -1,16 +1,22 @@
-var debug = require('debug')('botkit:incoming_webhooks');
+const debug = require('debug')('botkit:incoming_webhooks');
 
-module.exports = function(webserver, controller) {
+module.exports = (webserver, controller) => {
+  debug('Configured /botkit/receive url');
+  webserver.post('/botkit/receive', (req, res) => {
+    // respond to Slack that the webhook has been received.
+    res.status(200);
 
-    debug('Configured /botkit/receive url');
-    webserver.post('/botkit/receive', function(req, res) {
+    // Now, pass the webhook into be processed
+    controller.handleWebhookPayload(req, res);
+  });
 
-        // respond to Slack that the webhook has been received.
-        res.status(200);
+  debug('Configured /challengesubmit url');
+  webserver.post('/challenge/submit', (req, res) => {
+    // respond to Slack that the webhook has been received.
 
-        // Now, pass the webhook into be processed
-        controller.handleWebhookPayload(req, res);
+    debug('Received: ', req);
 
-    });
-
-}
+    // Now, pass the webhook into be processed
+    controller.handleWebhookPayload(req, res);
+  });
+};

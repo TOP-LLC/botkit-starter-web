@@ -1,7 +1,8 @@
 const PubNub = require('pubnub');
 const debug = require('debug')('botkit:pubnub');
+const rp = require('request-promise');
 
-module.exports = function (Botkit, config) {
+module.exports = (Botkit, config) => {
   const controller = Botkit.core(config);
 
   controller.defineBot((botkit, config) => {
@@ -14,16 +15,69 @@ module.exports = function (Botkit, config) {
 
     // here is where you make the API call to SEND a message
     // the message object should be in the proper format already
-    bot.send = function (message, cb) {
+    bot.send = (message, cb) => {
       debug('SEND: ', message);
 
+      const handleSMS = () => {
+        console.log('Running handleSMS');
+
+        const options = {
+          method: 'POST',
+          uri: 'http://borilabs.com/textline/send-email.php',
+          formData: {
+            message: 'this is a message',
+            phone: '9517647045',
+          },
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        };
+
+        rp
+          .post(options)
+          .then((response) => {
+            // handle success
+            console.log('Ran handleSMS ', JSON.stringify(response));
+          })
+          .catch((response) => {
+            // handle error
+            console.log('error in handleSMS ', response);
+          });
+      };
+
+      bot.client.hereNow(
+        {
+          channels: [message.channel],
+          includeUUIDs: true,
+          includeState: true,
+        },
+        (status, response) => {
+          const userId = message.channel.slice(4);
+
+          debug('Here NOW!', JSON.stringify(response));
+
+          debug('User ID is ', userId);
+
+          debug(`Bot-${userId}`);
+
+          debug(response.channels[`Bot-${userId}`]);
+
+          if (!response.channels[`Bot-${userId}`].occupants.find(o => o.uuid === userId)) {
+            handleSMS();
+          }
+          return response;
+        },
+      );
+
+      console.log('Running before publish');
       bot.client.publish(
         {
           message: {
             text: message.text,
             userId: message.publisher,
             user: 'TOP bot',
-            avatarURL: '',
+            avatarURL:
+              'https://files.graph.cool/cj9uk5gqb3qdb0164rx0iu633/cjaua2upq01px01942uecvukr',
           },
           channel: message.channel,
           sendByPost: false, // true to send via post
@@ -42,12 +96,13 @@ module.exports = function (Botkit, config) {
           }
         },
       );
-      cb();
+      console.log('Returning callback');
+      return cb();
     };
 
     // this function takes an incoming message (from a user) and an outgoing message (reply from bot)
     // and ensures that the reply has the appropriate fields to appear as a reply
-    bot.reply = function (src, resp, cb) {
+    bot.reply = (src, resp, cb) => {
       debug('Replying to message from user', src, resp);
       if (typeof resp === 'string') {
         resp = {
@@ -60,7 +115,7 @@ module.exports = function (Botkit, config) {
 
     // this function defines the mechanism by which botkit looks for ongoing conversations
     // probably leave as is!
-    bot.findConversation = function (message, cb) {
+    bot.findConversation = (message, cb) => {
       for (let t = 0; t < botkit.tasks.length; t++) {
         for (let c = 0; c < botkit.tasks[t].convos.length; c++) {
           if (
@@ -121,14 +176,29 @@ module.exports = function (Botkit, config) {
     next();
   });
 
+  // Handle all webhook endpoints
+
   // provide a way to receive messages - normally by handling an incoming webhook as below!
-  controller.subscribeToChannels = function () {
+  controller.handleWebhookPayload = (req, res) => {
+    const payload = req.body;
+
+    // var bot = controller.spawn({});
+    // controller.ingest(bot, payload, res);
+
+    debug('received webhook');
+
+    res.status(200);
+    res.end('Got it, thanks!');
+  };
+  // provide a way to receive messages - normally by handling an incoming webhook as below!
+  controller.subscribeToChannels = () => {
     const bot = controller.spawn({});
 
     const client = new PubNub({
       subscribeKey: 'sub-c-c574e958-3357-11e8-a409-76cf0979147a',
       publishKey: 'pub-c-3185f8fa-be4a-48d3-9091-da974f093b00',
       ssl: true,
+      withPresence: true,
     });
 
     client.addListener({
@@ -138,6 +208,9 @@ module.exports = function (Botkit, config) {
           return debug('IGNORE ME I AM A BOT');
         }
         controller.ingest(bot, message, null);
+      },
+      presence(presenceEvent) {
+        debug('Got a presence event', presenceEvent);
       },
     });
 
