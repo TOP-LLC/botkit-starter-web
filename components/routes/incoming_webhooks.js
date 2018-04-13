@@ -10,13 +10,115 @@ module.exports = (webserver, controller) => {
     controller.handleWebhookPayload(req, res);
   });
 
+  // Client submits a challenge for review
   debug('Configured /challengesubmit url');
-  webserver.post('/challenge/submit', (req, res) => {
-    // respond to Slack that the webhook has been received.
+  webserver.post('/challengesubmit', (req, res) => {
+    // Challenge will either be intermittent or touchpoint. If Touchpoint, check if all challenges for given session are complete.
 
-    debug('Received: ', req);
+    debug('Received: ', JSON.stringify(req.body));
+
+    const {
+      type,
+      title,
+      session,
+      challengeCriteria,
+      activities,
+      reviewType,
+    } = req.body.data.ChallengeMetric.node.challenge;
+    const { id, firstName, lastName } = req.body.data.ChallengeMetric.node.user;
+
+    if (reviewType === 'Touchpoint') {
+      if (type === 'Submission') {
+        // Trigger bot convo for asking questions
+
+        debug('Challenge is a Submission');
+
+        const bot = controller.spawn({});
+
+        controller.studio
+          .get(bot, `challenge_metric_${type.toLowerCase()}_start`, id, `Bot-${id}`)
+          .then((convo) => {
+            convo.setVar('firstName', firstName);
+            convo.setVar('lastName', lastName);
+            convo.setVar('title', title);
+            convo.setVar('type', type);
+            convo.setVar('text', activities[0].text);
+            convo.setVar('userId', id);
+
+            // crucial! call convo.activate to set it in motion
+            convo.activate();
+          });
+
+        // Trigger bot convo if this is only one of many challenges remaining to be completed
+      } else {
+        // Trigger bot convo for confirming submission
+
+        debug('Challenge is not a submission');
+
+        const bot = controller.spawn({});
+
+        controller.studio.get(bot, 'challenge_metric_received', id, `Bot-${id}`).then((convo) => {
+          convo.setVar('firstName', firstName);
+          convo.setVar('lastName', lastName);
+          convo.setVar('title', title);
+          convo.setVar('type', type);
+          convo.setVar('userId', id);
+          convo.setVar('sessionTitle', session.title);
+          convo.setVar('sessionNumber', session.number);
+
+          // crucial! call convo.activate to set it in motion
+          convo.activate();
+        });
+      }
+    } else if (type === 'Submission') {
+      // Trigger bot convo for asking questions
+
+      debug('Challenge is a Submission');
+
+      const bot = controller.spawn({});
+
+      controller.studio
+        .get(bot, `challenge_metric_${type.toLowerCase()}_incremental_start`, id, `Bot-${id}`)
+        .then((convo) => {
+          convo.setVar('firstName', firstName);
+          convo.setVar('lastName', lastName);
+          convo.setVar('title', title);
+          convo.setVar('type', type);
+          convo.setVar('text', activities[0].text);
+          convo.setVar('userId', id);
+
+          // crucial! call convo.activate to set it in motion
+          convo.activate();
+        });
+
+      // Trigger bot convo if this is only one of many challenges remaining to be completed
+    } else {
+      // Trigger bot convo for confirming submission
+
+      debug('Challenge is not a submission');
+
+      const bot = controller.spawn({});
+
+      controller.studio
+        .get(bot, 'challenge_metric_incremental_received', id, `Bot-${id}`)
+        .then((convo) => {
+          convo.setVar('firstName', firstName);
+          convo.setVar('lastName', lastName);
+          convo.setVar('title', title);
+          convo.setVar('type', type);
+          convo.setVar('userId', id);
+          convo.setVar('sessionTitle', session.title);
+          convo.setVar('sessionNumber', session.number);
+
+          // crucial! call convo.activate to set it in motion
+          convo.activate();
+        });
+    }
+
+    res.status(200);
+    res.end('OK');
 
     // Now, pass the webhook into be processed
-    controller.handleWebhookPayload(req, res);
+    // controller.handleWebhookPayload(req, res);
   });
 };

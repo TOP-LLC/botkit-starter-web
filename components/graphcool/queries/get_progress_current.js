@@ -12,7 +12,7 @@ module.exports = (userId) => {
         firstName
         lastName
         progressCurrent {
-          challenge {
+          challenged {
             id
             type
             title

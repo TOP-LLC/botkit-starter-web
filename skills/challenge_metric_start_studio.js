@@ -3,7 +3,7 @@ import getProgressComplete from './../components/graphcool/queries/get_progress_
 
 const debug = require('debug')('botkit:challenge_metric_start_studio');
 
-// Refactor for serverless function
+// Determine what kind of challenge progressCurrent is. Start corresponding studio script for that challenge type.
 
 module.exports = (controller) => {
   controller.hears(['challenge_metric_start'], ['message_received'], (bot, message) => {
@@ -11,8 +11,7 @@ module.exports = (controller) => {
     function formatAttachment(progressCurrent) {
       console.log('Query response from progressCurrent is ', JSON.stringify(progressCurrent));
 
-      const {challenge} = progressCurrent.User.progressCurrent;
-      console.log('Challenge is ', challenge);
+      const { challenge } = progressCurrent.User.progressCurrent;
 
       const data = {
         challenge,
@@ -66,7 +65,7 @@ module.exports = (controller) => {
           debug('challengeData is ', challengeData);
 
           return controller.studio
-            .get(bot, 'challenge_metric_start', message.user, message.channel)
+            .get(bot, `challenge_metric_${challengeData.type}_start`, message.user, message.channel)
             .then((convo) => {
               convo.setVar('firstName', firstName);
               convo.setVar('lastName', lastName);
@@ -123,12 +122,12 @@ module.exports = (controller) => {
     const value = convo.extractResponse('string_question_2');
 
     if (value.attachments !== null) {
-      if (value.attachments[0].type === "image") {
-        console.log("Response type is ", JSON.stringify(response))
-        answers["upload"] = response.attachments[0].payload.url
+      if (value.attachments[0].type === 'image') {
+        console.log('Response type is ', JSON.stringify(response));
+        answers.upload = response.attachments[0].payload.url;
         convo.next();
       } else {
-        convo.say("Hmm, I don't recognize that image. Can you try again?")
+        convo.say("Hmm, I don't recognize that image. Can you try again?");
         convo.repeat();
       }
     }

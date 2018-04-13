@@ -1,6 +1,7 @@
 const PubNub = require('pubnub');
 const debug = require('debug')('botkit:pubnub');
 const rp = require('request-promise');
+const lokkaClient = require('./lokka_graphcool.js');
 
 module.exports = (Botkit, config) => {
   const controller = Botkit.core(config);
@@ -25,7 +26,7 @@ module.exports = (Botkit, config) => {
           method: 'POST',
           uri: 'http://borilabs.com/textline/send-email.php',
           formData: {
-            message: 'this is a message',
+            message: message.text,
             phone: '9517647045',
           },
           headers: {
@@ -45,6 +46,29 @@ module.exports = (Botkit, config) => {
           });
       };
 
+      const handleNotification = (userId) => {
+        debug('Running handleNotification');
+
+        const query = `
+          mutation($userId: ID!, $text: String!) {
+            createNotification(userId: $userId, text: $text, read: false) {
+              id
+            }
+          }
+        `;
+
+        const vars = {
+          userId,
+          text: message.text,
+          read: false,
+        };
+
+        return lokkaClient.query(query, vars).then((result) => {
+          debug('Result of notification creation: ', result);
+          return result;
+        });
+      };
+
       bot.client.hereNow(
         {
           channels: [message.channel],
@@ -56,14 +80,9 @@ module.exports = (Botkit, config) => {
 
           debug('Here NOW!', JSON.stringify(response));
 
-          debug('User ID is ', userId);
-
-          debug(`Bot-${userId}`);
-
-          debug(response.channels[`Bot-${userId}`]);
-
           if (!response.channels[`Bot-${userId}`].occupants.find(o => o.uuid === userId)) {
             handleSMS();
+            handleNotification(userId);
           }
           return response;
         },
@@ -204,7 +223,7 @@ module.exports = (Botkit, config) => {
     client.addListener({
       message(message) {
         debug('New Message!', message);
-        if (message.message.user === 'TOP bot') {
+        if (message.message.user === 'TOP bot' || message.message.typeOf === 'object') {
           return debug('IGNORE ME I AM A BOT');
         }
         controller.ingest(bot, message, null);
