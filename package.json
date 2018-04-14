@@ -6,6 +6,7 @@
   "scripts": {
     "start": "set NODE_ENV=dev && set DEBUG=* && nodemon bot.js"
   },
+  "proxy": "http://localhost:3001",
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.2.2",
@@ -57,11 +58,7 @@
     "url": "https://github.com/howdyai/botkit-starter-web/issues"
   },
   "homepage": "https://www.trainoptimizeperform.com",
-  "keywords": [
-    "bots",
-    "chatbots",
-    "web chat"
-  ],
+  "keywords": ["bots", "chatbots", "web chat"],
   "author": "senorcodecat@gmail.com",
   "license": "ISC"
 }
