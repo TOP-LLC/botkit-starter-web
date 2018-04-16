@@ -47,7 +47,7 @@ module.exports = (Botkit, config) => {
       };
 
       const handleNotification = (userId) => {
-        debug('Running handleNotification');
+        debug(`Running handleNotification for ${userId} with message ${message.text}`);
 
         const query = `
           mutation($userId: ID!, $text: String!) {

@@ -41,6 +41,9 @@ require(`${__dirname}/components/plugin_glitch.js`)(controller);
 // Load in a plugin that defines the bot's identity
 require(`${__dirname}/components/plugin_identity.js`)(controller);
 
+// Testing functions
+// require(`${__dirname}/components/graphcool/mutations/update_user_progressCurrent_after_onboarding.js`)(controller);
+
 // enable advanced botkit studio metrics
 // and capture the metrics API to use with the identity plugin!
 controller.metrics = require('botkit-studio-metrics')(controller);

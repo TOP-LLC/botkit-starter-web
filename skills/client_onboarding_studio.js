@@ -5,6 +5,8 @@ Triggers when progressCurrent is set to first Program/Cycle/Session/Sprint
 */
 import getProgressCurrent from './../components/graphcool/queries/get_progress_current';
 import updatePhoneSMS from './../components/graphcool/mutations/update_user_phone_number';
+import startTraining from './../components/graphcool/mutations/update_user_progressCurrent_after_onboarding';
+import { start } from 'repl';
 
 const debug = require('debug')('botkit:client_onboarding_studio');
 const sendSMS = require('./../components/functions/sendSMS');
@@ -204,6 +206,15 @@ module.exports = (controller) => {
         })
         .catch((error) => {
           debug('Error updating phone: ', error);
+        });
+
+      startTraining(convo.context.user)
+        .then((result) => {
+          debug('Updated events: ', result);
+          return { data: result };
+        })
+        .catch((error) => {
+          debug('Error updating events: ', error);
         });
 
       // do something with the responses

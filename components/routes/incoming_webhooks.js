@@ -10,6 +10,26 @@ module.exports = (webserver, controller) => {
     controller.handleWebhookPayload(req, res);
   });
 
+  debug('Configured /onboarstart url');
+  webserver.post('/onboardstart', (req, res) => {
+    debug('Running onboarding start', JSON.stringify(req.body));
+
+    const { user } = req.body;
+
+    const bot = controller.spawn({});
+
+    controller.studio.get(bot, 'New Client Onboarding', user.id, `Bot-${user.id}`).then((convo) => {
+      // crucial! call convo.activate to set it in motion
+      convo.setVar('firstName', user.firstName);
+
+      convo.activate();
+    });
+
+    res.status(200);
+
+    res.end('Got it!');
+  });
+
   // Client submits a challenge for review
   debug('Configured /challengesubmit url');
   webserver.post('/challengesubmit', (req, res) => {

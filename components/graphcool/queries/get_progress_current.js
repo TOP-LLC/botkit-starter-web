@@ -12,6 +12,18 @@ module.exports = (userId) => {
         firstName
         lastName
         progressCurrent {
+          program {
+            id
+          }
+          cycle {
+            id
+          }
+          session {
+            id
+          }
+          sprint {
+            id
+          }
           challenges {
             id
             type
