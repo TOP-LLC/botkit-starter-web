@@ -1,3 +1,5 @@
+import eventStart from './../functions/eventStart';
+
 const debug = require('debug')('botkit:incoming_webhooks');
 
 module.exports = (webserver, controller) => {
@@ -21,6 +23,40 @@ module.exports = (webserver, controller) => {
     controller.studio.get(bot, 'New Client Onboarding', user.id, `Bot-${user.id}`).then((convo) => {
       // crucial! call convo.activate to set it in motion
       convo.setVar('firstName', user.firstName);
+
+      convo.activate();
+    });
+
+    res.status(200);
+
+    res.end('Got it!');
+  });
+
+  debug('Configured /eventstart url');
+  webserver.post('/eventstart', async (req, res) => {
+    debug('Running event start', JSON.stringify(req.body));
+
+    const { schedule } = req.body.data.Event.node;
+
+    const event = req.body.data.Event.node;
+
+    const eventRes = await eventStart(event);
+    debug('Returned event data: ', eventRes);
+    const {
+      eventType, greeting, title, number,
+    } = eventRes;
+
+    const { user } = schedule;
+
+    const bot = controller.spawn({});
+
+    controller.studio.get(bot, 'New Event Start', user.id, `Bot-${user.id}`).then((convo) => {
+      convo.setVar('firstName', user.firstName);
+      convo.setVar('type', eventType);
+      convo.setVar('greeting', greeting);
+      convo.setVar('title', title);
+      convo.setVar('number', number);
+      convo.setVar('url', 'http://localhost:3000/train/current');
 
       convo.activate();
     });
