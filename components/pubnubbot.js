@@ -26,13 +26,17 @@ module.exports = (Botkit, config) => {
           method: 'POST',
           uri: 'http://borilabs.com/textline/send-email.php',
           formData: {
-            message: message.text,
-            phone: '9517647045',
+            message: `${message.text} ${
+              message.url ? `http://toptraining.netlify.com${message.url}` : ''
+            }`,
+            phone: '7872471387',
           },
           headers: {
             'Content-Type': 'multipart/form-data',
           },
         };
+
+        console.log(options);
 
         rp
           .post(options)
@@ -95,6 +99,7 @@ module.exports = (Botkit, config) => {
             text: message.text,
             userId: message.publisher,
             user: 'TOP bot',
+            url: message.url ? message.url : null,
             avatarURL:
               'https://files.graph.cool/cj9uk5gqb3qdb0164rx0iu633/cjaua2upq01px01942uecvukr',
           },
@@ -188,6 +193,9 @@ module.exports = (Botkit, config) => {
   // at a minimum, copy all fields from `message` to `platform_message`
   controller.middleware.format.use((bot, message, platform_message, next) => {
     debug('Format debug', message);
+    if (message.training === 'current') {
+      platform_message.url = '/training/current';
+    }
     platform_message.text = message.text;
     platform_message.channel = message.channel;
     platform_message.continue_type = message.continue_typing;

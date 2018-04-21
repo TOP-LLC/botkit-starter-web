@@ -9,7 +9,6 @@ const hbs = require('express-hbs');
 module.exports = (controller) => {
   const webserver = express();
   webserver.use(bodyParser.json());
-  webserver.use(bodyParser.urlencoded({ extended: true }));
 
   // set up handlebars ready for tabs
   webserver.engine('hbs', hbs.express4({ partialsDir: `${__dirname}/../views/partials` }));

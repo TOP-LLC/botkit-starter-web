@@ -50,13 +50,15 @@ module.exports = (webserver, controller) => {
 
     const bot = controller.spawn({});
 
+    const url = '/train/current';
+
     controller.studio.get(bot, 'New Event Start', user.id, `Bot-${user.id}`).then((convo) => {
       convo.setVar('firstName', user.firstName);
       convo.setVar('type', eventType);
       convo.setVar('greeting', greeting);
       convo.setVar('title', title);
       convo.setVar('number', number);
-      convo.setVar('url', 'http://localhost:3000/train/current');
+      convo.setVar('url', url);
 
       convo.activate();
     });
