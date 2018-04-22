@@ -1,5 +1,7 @@
 import trainingEventStart from './../functions/trainingEventStart';
 
+const queryUser = require("./../graphcool/queries/get_user_info")
+const updateUserConvoPause = require("./../graphcool/queries/update_user_convo_pause")
 const debug = require('debug')('botkit:incoming_webhooks');
 
 module.exports = (webserver, controller) => {
@@ -10,6 +12,35 @@ module.exports = (webserver, controller) => {
 
     // Now, pass the webhook into be processed
     controller.handleWebhookPayload(req, res);
+  });
+
+  debug('Configured POSt /dashbotpause url for pausing bot for live takeover');
+  webserver.post('/dashbotpause', (req, res) => {
+    console.log('Received webhook for bot pausing');
+
+    const { paused, userId } = req.body;
+
+    async function setConvoPause(code, state) {
+      console.log('get user id started');
+
+      try {
+        const user = await queryUser(userId);
+        console.log('User ID is ', user.id);
+        const result = await updateUserConvoPause(user.id, paused);
+        console.log('Result of updateUserConvoPause is ', result);
+        return result;
+      } catch (err) {
+        return console.log('Error in the async chain is ', err);
+      }
+    }
+
+    console.log('Paused state and userId here: ', [paused, userId]);
+
+    return setConvoPause().then((result) => {
+      console.log('Completed user convo pause ', result);
+      res.status(200);
+      res.send('ok');
+    });
   });
 
   debug('Configured /onboarstart url');
