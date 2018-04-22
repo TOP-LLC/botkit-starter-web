@@ -19,34 +19,64 @@ module.exports = (Botkit, config) => {
     bot.send = (message, cb) => {
       debug('SEND: ', message);
 
-      const handleSMS = () => {
+      const getUserPhone = (userId) => {
+        const query = `
+          query ($id: ID!) {
+            User(id: $id) {
+              id
+              phoneSMS
+            }
+          }
+        `;
+        const vars = {
+          id: userId,
+        };
+
+        return lokkaClient.query(query, vars).then((result) => {
+          debug('User phone number: ', result.User.phoneSMS);
+          return result.User.phoneSMS;
+        });
+      };
+
+      const handleSMS = async () => {
         console.log('Running handleSMS');
+
+        const userId = message.channel.slice(4);
+
+        const phone = await getUserPhone(userId);
+        console.log('Phone on return is ', phone);
+
+        const url = message.url ? `http://toptraining.netlify.com${message.url}` : null;
+
+        const messageUrl = message.url ? `${message.text} ${url}` : message.text;
+
+        debug('SMS to send', messageUrl, 'at ', phone);
 
         const options = {
           method: 'POST',
-          uri: 'http://borilabs.com/textline/send-email.php',
+          uri: process.env.SMS_URL_STAGING,
           formData: {
-            message: `${message.text} ${
-              message.url ? `http://toptraining.netlify.com${message.url}` : ''
-            }`,
-            phone: '7872471387',
+            message: messageUrl,
+            phone,
           },
           headers: {
             'Content-Type': 'multipart/form-data',
           },
         };
 
-        console.log(options);
+        console.log('Form options: ', options);
 
-        rp
+        return rp
           .post(options)
           .then((response) => {
             // handle success
             console.log('Ran handleSMS ', JSON.stringify(response));
+            return response;
           })
-          .catch((response) => {
+          .catch((err) => {
             // handle error
-            console.log('error in handleSMS ', response);
+            console.log('error in handleSMS ', err);
+            return err;
           });
       };
 
@@ -193,8 +223,8 @@ module.exports = (Botkit, config) => {
   // at a minimum, copy all fields from `message` to `platform_message`
   controller.middleware.format.use((bot, message, platform_message, next) => {
     debug('Format debug', message);
-    if (message.training === 'current') {
-      platform_message.url = '/training/current';
+    if (message.train === 'current') {
+      platform_message.url = '/train/current';
     }
     platform_message.text = message.text;
     platform_message.channel = message.channel;

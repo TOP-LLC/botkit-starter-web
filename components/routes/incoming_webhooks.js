@@ -1,4 +1,4 @@
-import eventStart from './../functions/eventStart';
+import trainingEventStart from './../functions/trainingEventStart';
 
 const debug = require('debug')('botkit:incoming_webhooks');
 
@@ -32,15 +32,15 @@ module.exports = (webserver, controller) => {
     res.end('Got it!');
   });
 
-  debug('Configured /eventstart url');
-  webserver.post('/eventstart', async (req, res) => {
+  debug('Configured /trainingeventstart url');
+  webserver.post('/trainingeventstart', async (req, res) => {
     debug('Running event start', JSON.stringify(req.body));
 
     const { schedule } = req.body.data.Event.node;
 
     const event = req.body.data.Event.node;
 
-    const eventRes = await eventStart(event);
+    const eventRes = await trainingEventStart(event);
     debug('Returned event data: ', eventRes);
     const {
       eventType, greeting, title, number,
@@ -52,16 +52,18 @@ module.exports = (webserver, controller) => {
 
     const url = '/train/current';
 
-    controller.studio.get(bot, 'New Event Start', user.id, `Bot-${user.id}`).then((convo) => {
-      convo.setVar('firstName', user.firstName);
-      convo.setVar('type', eventType);
-      convo.setVar('greeting', greeting);
-      convo.setVar('title', title);
-      convo.setVar('number', number);
-      convo.setVar('url', url);
+    controller.studio
+      .get(bot, 'New Training Event Start', user.id, `Bot-${user.id}`)
+      .then((convo) => {
+        convo.setVar('firstName', user.firstName);
+        convo.setVar('type', eventType);
+        convo.setVar('greeting', greeting);
+        convo.setVar('title', title);
+        convo.setVar('number', number);
+        convo.setVar('url', url);
 
-      convo.activate();
-    });
+        convo.activate();
+      });
 
     res.status(200);
 
