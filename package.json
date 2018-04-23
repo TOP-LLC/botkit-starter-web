@@ -4,8 +4,7 @@
   "description": "The future of training from industry rockstars",
   "main": "bot.js",
   "scripts": {
-    "start": "set NODE_ENV=dev && set DEBUG=* && nodemon bot.js",
-    "prod": "nodemon bot.js"
+    "start": "nodemon bot.js"
   },
   "proxy": "http://localhost:3001",
   "devDependencies": {
