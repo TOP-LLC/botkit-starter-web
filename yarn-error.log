@@ -2,7 +2,7 @@ Arguments:
   C:\Program Files\nodejs\node.exe C:\Program Files (x86)\Yarn\bin\yarn.js start
 
 PATH: 
-  C:\Program Files\Docker\Docker\Resources\bin;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\intel64\compiler;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\Program Files\nodejs\;C:\Program Files\Git\cmd;C:\Program Files (x86)\Yarn\bin\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Users\corey\AppData\Local\Microsoft\WindowsApps;C:\Users\corey\AppData\Roaming\npm;C:\Program Files\Microsoft VS Code\bin;C:\Users\corey\AppData\Local\Yarn\bin
+  C:\Program Files\Docker\Docker\Resources\bin;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\intel64\compiler;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\Program Files\nodejs\;C:\Program Files\Git\cmd;C:\Program Files (x86)\Yarn\bin\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;%USERPROFILE%\AppData\Local\Microsoft\WindowsApps;C:\Users\corey\AppData\Roaming\npm;C:\Program Files\Microsoft VS Code\bin;C:\Users\corey\AppData\Local\Yarn\bin;C:\Users\corey\AppData\Local\hyper\app-2.0.0\resources\bin
 
 Yarn version: 
   1.5.1
@@ -22,6 +22,7 @@ npm manifest:
     "scripts": {
       "start": "set NODE_ENV=dev && set DEBUG=* && nodemon bot.js"
     },
+    "proxy": "http://localhost:3001",
     "devDependencies": {
       "babel-core": "^6.26.0",
       "babel-eslint": "^8.2.2",
@@ -52,11 +53,13 @@ npm manifest:
       "debug": "^3.1.0",
       "express": "^4.15.3",
       "express-hbs": "^1.0.4",
+      "express-jwt": "^5.3.1",
       "form-data": "^2.3.2",
       "lokka": "^1.7.0",
       "lokka-transport-http": "^1.6.1",
       "mongoose": "^4.13.7",
       "node-env-file": "^0.1.8",
+      "nodemailer": "^4.6.4",
       "nodemon": "^1.17.2",
       "pubnub": "^4.20.2",
       "querystring": "^0.2.0",
@@ -750,7 +753,7 @@ Lockfile:
     dependencies:
       lodash "^4.14.0"
   
-  async@^1.4.0, async@^1.5.2:
+  async@^1.4.0, async@^1.5.0, async@^1.5.2:
     version "1.5.2"
     resolved "https://registry.yarnpkg.com/async/-/async-1.5.2.tgz#ec6a61ae56480c0c3cb241c95618e20892f9672a"
   
@@ -2445,6 +2448,19 @@ Lockfile:
       js-beautify "1.6.8"
       readdirp "2.1.0"
   
+  express-jwt@^5.3.1:
+    version "5.3.1"
+    resolved "https://registry.yarnpkg.com/express-jwt/-/express-jwt-5.3.1.tgz#66f05c7dddb5409c037346a98b88965bb10ea4ae"
+    dependencies:
+      async "^1.5.0"
+      express-unless "^0.3.0"
+      jsonwebtoken "^8.1.0"
+      lodash.set "^4.0.0"
+  
+  express-unless@^0.3.0:
+    version "0.3.1"
+    resolved "https://registry.yarnpkg.com/express-unless/-/express-unless-0.3.1.tgz#2557c146e75beb903e2d247f9b5ba01452696e20"
+  
   express@^4.15.2, express@^4.15.3:
     version "4.16.3"
     resolved "https://registry.yarnpkg.com/express/-/express-4.16.3.tgz#6af8a502350db3246ecc4becf6b5a34d22f7ed53"
@@ -3698,6 +3714,10 @@ Lockfile:
     version "4.1.1"
     resolved "https://registry.yarnpkg.com/lodash.once/-/lodash.once-4.1.1.tgz#0dd3971213c7c56df880977d504c88fb471a97ac"
   
+  lodash.set@^4.0.0:
+    version "4.3.2"
+    resolved "https://registry.yarnpkg.com/lodash.set/-/lodash.set-4.3.2.tgz#d8757b1da807dde24816b0d6a84bea1a76230b23"
+  
   lodash.unescape@4.0.1:
     version "4.0.1"
     resolved "https://registry.yarnpkg.com/lodash.unescape/-/lodash.unescape-4.0.1.tgz#bf2249886ce514cda112fae9218cdc065211fc9c"
@@ -4172,6 +4192,10 @@ Lockfile:
   node-xmpp-tls-connect@^1.0.1:
     version "1.0.1"
     resolved "https://registry.yarnpkg.com/node-xmpp-tls-connect/-/node-xmpp-tls-connect-1.0.1.tgz#91ace43ac26b138861b2be478df9df19d61dc5c3"
+  
+  nodemailer@^4.6.4:
+    version "4.6.4"
+    resolved "https://registry.yarnpkg.com/nodemailer/-/nodemailer-4.6.4.tgz#f0d72d0c6a6ec5f4369fa8f4bf5127a31baa2014"
   
   nodemon@^1.17.2:
     version "1.17.2"

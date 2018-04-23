@@ -1,4 +1,4 @@
-const lokkaClient = require('./../lokka_graphcool.js');
+const lokkaClient = require('./../../lokka_graphcool');
 
 module.exports = (user, convoPause) => {
   console.log('Update user pause status');

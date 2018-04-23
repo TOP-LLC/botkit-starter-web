@@ -1,4 +1,4 @@
-const lokkaClient = require('./../lokka_graphcool.js');
+const lokkaClient = require('./../../lokka_graphcool');
 
 module.exports = (id) => {
   console.log('Run user query with PSID ', id);

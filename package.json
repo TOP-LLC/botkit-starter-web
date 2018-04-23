@@ -4,7 +4,8 @@
   "description": "The future of training from industry rockstars",
   "main": "bot.js",
   "scripts": {
-    "start": "set NODE_ENV=dev && set DEBUG=* && nodemon bot.js"
+    "start": "set NODE_ENV=dev && set DEBUG=* && nodemon bot.js",
+    "prod": "nodemon bot.js"
   },
   "proxy": "http://localhost:3001",
   "devDependencies": {
@@ -43,6 +44,7 @@
     "lokka-transport-http": "^1.6.1",
     "mongoose": "^4.13.7",
     "node-env-file": "^0.1.8",
+    "nodemailer": "^4.6.4",
     "nodemon": "^1.17.2",
     "pubnub": "^4.20.2",
     "querystring": "^0.2.0",
@@ -53,17 +55,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/howdyai/botkit-starter-web.git"
+    "url": "https://www.trainoptimizeperform.com"
   },
   "bugs": {
-    "url": "https://github.com/howdyai/botkit-starter-web/issues"
+    "url": "https://www.trainoptimizeperform.com"
   },
   "homepage": "https://www.trainoptimizeperform.com",
-  "keywords": [
-    "bots",
-    "chatbots",
-    "web chat"
-  ],
+  "keywords": ["bots", "chatbots", "web chat"],
   "author": "senorcodecat@gmail.com",
   "license": "ISC"
 }

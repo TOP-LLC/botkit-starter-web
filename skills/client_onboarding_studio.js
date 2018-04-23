@@ -163,6 +163,10 @@ module.exports = (controller) => {
 
       const { phone } = convo.vars;
 
+      const newSMS = `Hey ${
+        convo.vars.firstName
+      }, thanks for setting up SMS messages for TOP mortgage training. You're good to go!`
+
       sendSMS(smsMessage, phone);
 
       next();
@@ -208,14 +212,14 @@ module.exports = (controller) => {
           debug('Error updating phone: ', error);
         });
 
-      startTraining(convo.context.user)
-        .then((result) => {
-          debug('Updated events: ', result);
-          return { data: result };
-        })
-        .catch((error) => {
-          debug('Error updating events: ', error);
-        });
+      // startTraining(convo.context.user)
+      //   .then((result) => {
+      //     debug('Updated events: ', result);
+      //     return { data: result };
+      //   })
+      //   .catch((error) => {
+      //     debug('Error updating events: ', error);
+      //   });
 
       // do something with the responses
     }

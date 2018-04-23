@@ -2,6 +2,7 @@ const PubNub = require('pubnub');
 const debug = require('debug')('botkit:pubnub');
 const rp = require('request-promise');
 const lokkaClient = require('./lokka_graphcool.js');
+const nodemailer = require('nodemailer');
 
 module.exports = (Botkit, config) => {
   const controller = Botkit.core(config);
@@ -38,6 +39,78 @@ module.exports = (Botkit, config) => {
         });
       };
 
+      // const handleSMS = async () => {
+      //   console.log('Running handleSMS');
+
+      //   const userId = message.channel.slice(4);
+
+      //   const phone = await getUserPhone(userId);
+      //   console.log('Phone on return is ', phone);
+
+      //   let url = '';
+
+      //   if (message.form) {
+      //     url =
+      //       'https://docs.google.com/forms/d/e/1FAIpQLSdjwS19bEvM48t53SMFGUKsDqva4eNwF16rkQO7UrkfFj81Gg/viewform';
+      //   } else {
+      //     url = message.url ? `http://topmortgage.co${message.url}` : null;
+      //   }
+
+      //   const messageUrl = message.url ? `${message.text} ${url}` : message.text;
+
+      //   debug('SMS to send', messageUrl, 'at ', phone);
+
+        // const transporter = nodemailer.createTransport({
+        //   service: 'gmail',
+        //   auth: {
+        //     user: 'support@topmortgage.co',
+        //     pass: 'Il0v3Littl3F00t!',
+        //   },
+        // });
+
+        // const mailOptions = {
+        //   from: 'support@topmortgage.co',
+        //   to: `${phone}@mms.att.net,
+        //   ${phone}@tmomail.net,
+        //   ${phone}@vzwpix.com,
+        //   ${phone}@pm.sprint.co,
+        //   ${phone}@mmst5.tracfo.com,           
+        //   ${phone}@vmpix.com,         
+        //   ${phone}@mymetropcs.com,
+        //   ${phone}@myboostmobilcom,
+        //   ${phone}@mms.cricketweless.net,
+        //   ${phone}@msg.fi.googlcom,
+        //   ${phone}@mms.uscc.net,
+        //   ${phone}@message.tingom,
+        //   ${phone}@mailmymobileet,
+        //   ${phone}@cspire1.com,
+        //   ${phone}@vtext.com`,       
+        //   subject: 'TOP mortgage training Bot',
+        //   text: messageUrl,
+        // };
+
+        // return transporter.sendMail(mailOptions, (error, info) => {
+        //   if (error) {
+        //     console.log(error);
+        //   } else {
+        //     console.log(`Email sent: ${info.response}`);
+        //   }
+        // });
+
+        // return rp
+        //   .post(options)
+        //   .then((response) => {
+        //     // handle success
+        //     console.log('Ran handleSMS ', JSON.stringify(response));
+        //     return response;
+        //   })
+        //   .catch((err) => {
+        //     // handle error
+        //     console.log('error in handleSMS ', err);
+        //     return err;
+        //   });
+      };
+
       const handleSMS = async () => {
         console.log('Running handleSMS');
 
@@ -46,7 +119,13 @@ module.exports = (Botkit, config) => {
         const phone = await getUserPhone(userId);
         console.log('Phone on return is ', phone);
 
-        const url = message.url ? `http://toptraining.netlify.com${message.url}` : null;
+        let url = ''
+
+        if (message.form) {
+          url = 'https://docs.google.com/forms/d/e/1FAIpQLSdjwS19bEvM48t53SMFGUKsDqva4eNwF16rkQO7UrkfFj81Gg/viewform'
+        } else {
+          url = message.url ? `http://topmortgage.co${message.url}` : null;
+        }
 
         const messageUrl = message.url ? `${message.text} ${url}` : message.text;
 
@@ -225,6 +304,10 @@ module.exports = (Botkit, config) => {
     debug('Format debug', message);
     if (message.train === 'current') {
       platform_message.url = '/train/current';
+    } else if (message.form === 'google') {
+      platform_message.url =
+        'https://docs.google.com/forms/d/e/1FAIpQLSdjwS19bEvM48t53SMFGUKsDqva4eNwF16rkQO7UrkfFj81Gg/viewform';
+      platform_message.form = true;
     }
     platform_message.text = message.text;
     platform_message.channel = message.channel;
