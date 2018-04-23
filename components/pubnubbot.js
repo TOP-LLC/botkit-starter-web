@@ -60,56 +60,56 @@ module.exports = (Botkit, config) => {
 
       //   debug('SMS to send', messageUrl, 'at ', phone);
 
-        // const transporter = nodemailer.createTransport({
-        //   service: 'gmail',
-        //   auth: {
-        //     user: 'support@topmortgage.co',
-        //     pass: 'Il0v3Littl3F00t!',
-        //   },
-        // });
+      //   const transporter = nodemailer.createTransport({
+      //     service: 'gmail',
+      //     auth: {
+      //       user: 'support@topmortgage.co',
+      //       pass: 'Il0v3Littl3F00t!',
+      //     },
+      //   });
 
-        // const mailOptions = {
-        //   from: 'support@topmortgage.co',
-        //   to: `${phone}@mms.att.net,
-        //   ${phone}@tmomail.net,
-        //   ${phone}@vzwpix.com,
-        //   ${phone}@pm.sprint.co,
-        //   ${phone}@mmst5.tracfo.com,           
-        //   ${phone}@vmpix.com,         
-        //   ${phone}@mymetropcs.com,
-        //   ${phone}@myboostmobilcom,
-        //   ${phone}@mms.cricketweless.net,
-        //   ${phone}@msg.fi.googlcom,
-        //   ${phone}@mms.uscc.net,
-        //   ${phone}@message.tingom,
-        //   ${phone}@mailmymobileet,
-        //   ${phone}@cspire1.com,
-        //   ${phone}@vtext.com`,       
-        //   subject: 'TOP mortgage training Bot',
-        //   text: messageUrl,
-        // };
+      //   const mailOptions = {
+      //     from: 'support@topmortgage.co',
+      //     to: `${phone}@mms.att.net,
+      //     ${phone}@tmomail.net,
+      //     ${phone}@vzwpix.com,
+      //     ${phone}@pm.sprint.co,
+      //     ${phone}@mmst5.tracfo.com,           
+      //     ${phone}@vmpix.com,         
+      //     ${phone}@mymetropcs.com,
+      //     ${phone}@myboostmobilcom,
+      //     ${phone}@mms.cricketweless.net,
+      //     ${phone}@msg.fi.googlcom,
+      //     ${phone}@mms.uscc.net,
+      //     ${phone}@message.tingom,
+      //     ${phone}@mailmymobileet,
+      //     ${phone}@cspire1.com,
+      //     ${phone}@vtext.com`,       
+      //     subject: 'TOP mortgage training Bot',
+      //     text: messageUrl,
+      //   };
 
-        // return transporter.sendMail(mailOptions, (error, info) => {
-        //   if (error) {
-        //     console.log(error);
-        //   } else {
-        //     console.log(`Email sent: ${info.response}`);
-        //   }
-        // });
+      //   return transporter.sendMail(mailOptions, (error, info) => {
+      //     if (error) {
+      //       console.log(error);
+      //     } else {
+      //       console.log(`Email sent: ${info.response}`);
+      //     }
+      //   });
 
-        // return rp
-        //   .post(options)
-        //   .then((response) => {
-        //     // handle success
-        //     console.log('Ran handleSMS ', JSON.stringify(response));
-        //     return response;
-        //   })
-        //   .catch((err) => {
-        //     // handle error
-        //     console.log('error in handleSMS ', err);
-        //     return err;
-        //   });
-      };
+      //   // return rp
+      //   //   .post(options)
+      //   //   .then((response) => {
+      //   //     // handle success
+      //   //     console.log('Ran handleSMS ', JSON.stringify(response));
+      //   //     return response;
+      //   //   })
+      //   //   .catch((err) => {
+      //   //     // handle error
+      //   //     console.log('error in handleSMS ', err);
+      //   //     return err;
+      //   //   });
+      // };
 
       const handleSMS = async () => {
         console.log('Running handleSMS');
@@ -124,7 +124,7 @@ module.exports = (Botkit, config) => {
         if (message.form) {
           url = 'https://docs.google.com/forms/d/e/1FAIpQLSdjwS19bEvM48t53SMFGUKsDqva4eNwF16rkQO7UrkfFj81Gg/viewform'
         } else {
-          url = message.url ? `http://topmortgage.co${message.url}` : null;
+          url = message.url ? `http://toptraining.netlify.com${message.url}` : null;
         }
 
         const messageUrl = message.url ? `${message.text} ${url}` : message.text;
