@@ -4,7 +4,7 @@
   "description": "The future of training from industry rockstars",
   "main": "bot.js",
   "scripts": {
-    "start": " set DEBUG=* && nodemon bot.js"
+    "start": "DEBUG=* nodemon bot.js"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
