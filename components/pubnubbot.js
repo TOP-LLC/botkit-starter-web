@@ -74,8 +74,8 @@ module.exports = (Botkit, config) => {
       //     ${phone}@tmomail.net,
       //     ${phone}@vzwpix.com,
       //     ${phone}@pm.sprint.co,
-      //     ${phone}@mmst5.tracfo.com,           
-      //     ${phone}@vmpix.com,         
+      //     ${phone}@mmst5.tracfo.com,
+      //     ${phone}@vmpix.com,
       //     ${phone}@mymetropcs.com,
       //     ${phone}@myboostmobilcom,
       //     ${phone}@mms.cricketweless.net,
@@ -84,7 +84,7 @@ module.exports = (Botkit, config) => {
       //     ${phone}@message.tingom,
       //     ${phone}@mailmymobileet,
       //     ${phone}@cspire1.com,
-      //     ${phone}@vtext.com`,       
+      //     ${phone}@vtext.com`,
       //     subject: 'TOP mortgage training Bot',
       //     text: messageUrl,
       //   };
@@ -119,10 +119,11 @@ module.exports = (Botkit, config) => {
         const phone = await getUserPhone(userId);
         console.log('Phone on return is ', phone);
 
-        let url = ''
+        let url = '';
 
         if (message.form) {
-          url = 'https://docs.google.com/forms/d/e/1FAIpQLSdjwS19bEvM48t53SMFGUKsDqva4eNwF16rkQO7UrkfFj81Gg/viewform'
+          url =
+            'https://docs.google.com/forms/d/e/1FAIpQLSdjwS19bEvM48t53SMFGUKsDqva4eNwF16rkQO7UrkfFj81Gg/viewform';
         } else {
           url = message.url ? `http://toptraining.netlify.com${message.url}` : null;
         }
