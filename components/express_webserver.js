@@ -27,8 +27,8 @@ module.exports = (controller) => {
 
   const server = http.createServer(webserver);
 
-  server.listen(process.env.PORT || 3000, null, () => {
-    debug(`Express webserver configured and listening at http://localhost:${process.env.PORT}` || 3000);
+  server.listen(process.env.PORT || 80, null, () => {
+    debug(`Express webserver configured and listening at http://localhost:${process.env.PORT}` || 80);
   });
 
   // TODO: Does this call to identify really belong here?
