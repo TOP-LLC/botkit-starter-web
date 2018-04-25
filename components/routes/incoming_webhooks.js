@@ -1,7 +1,7 @@
 import trainingEventStart from './../functions/trainingEventStart';
 
-const queryUser = require("./../graphcool/queries/get_user_info")
-const updateUserConvoPause = require("./../graphcool/queries/update_user_convo_pause")
+const queryUser = require('./../graphcool/queries/get_user_info');
+const updateUserConvoPause = require('./../graphcool/queries/update_user_convo_pause');
 const debug = require('debug')('botkit:incoming_webhooks');
 
 module.exports = (webserver, controller) => {
@@ -57,6 +57,34 @@ module.exports = (webserver, controller) => {
 
       convo.activate();
     });
+
+    res.status(200);
+
+    res.end('Got it!');
+  });
+
+  debug('Configured /touchpointtime url');
+  webserver.post('/touchpointtime', async (req, res) => {
+    debug('Running touchpoint time event start', JSON.stringify(req.body));
+
+    const { user } = req.body.data.TouchpointStatus.node;
+
+    const touchpointStatus = req.body.data.TouchpointStatus.node;
+
+    const { number, title } = touchpointStatus.user.progressCurrent.session;
+
+    const bot = controller.spawn({});
+
+    controller.studio
+      .get(bot, 'Touchpoint Appointment Needs Booked', user.id, `Bot-${user.id}`)
+      .then((convo) => {
+        convo.setVar('firstName', user.firstName);
+        convo.setVar('greeting', 'Boom');
+        convo.setVar('number', number);
+        convo.setVar('title', title);
+
+        convo.activate();
+      });
 
     res.status(200);
 
