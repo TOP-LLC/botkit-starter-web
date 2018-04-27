@@ -41,6 +41,9 @@ require(`${__dirname}/components/plugin_glitch.js`)(controller);
 // Load in a plugin that defines the bot's identity
 require(`${__dirname}/components/plugin_identity.js`)(controller);
 
+// Enable Dashbot.io plugin
+require(__dirname + "/components/plugin_dashbot.js")(controller)
+
 // Testing functions
 // require(`${__dirname}/components/graphcool/mutations/update_user_progressCurrent_after_onboarding.js`)(controller);
 

@@ -32,6 +32,7 @@
     "botkit": "^0.6.12",
     "botkit-storage-mongo": "^1.0.6",
     "botkit-studio-metrics": "0.0.4",
+    "dashbot": "^9.8.0",
     "dateformat": "^3.0.3",
     "debug": "^3.1.0",
     "express": "^4.15.3",
@@ -59,7 +60,11 @@
     "url": "https://www.trainoptimizeperform.com"
   },
   "homepage": "https://www.trainoptimizeperform.com",
-  "keywords": ["bots", "chatbots", "web chat"],
+  "keywords": [
+    "bots",
+    "chatbots",
+    "web chat"
+  ],
   "author": "senorcodecat@gmail.com",
   "license": "ISC"
 }
