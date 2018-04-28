@@ -2,7 +2,7 @@ const lokkaClient = require('./../../lokka_graphcool.js');
 const debug = require('debug')('botkit:update_user_loginNotice');
 
 module.exports = (userId) => {
-  console.log('Set progressCurrent events to InProgress');
+  console.log('Update user loginNotice to None for user: ', userId);
 
   const updateLoginNotice = async () => {
     const mutationQuery = `($userId: ID!) {
@@ -27,7 +27,7 @@ module.exports = (userId) => {
       })
       .catch((error) => {
         debug('Error updating loginNotice ', error);
-        return { data: error };
+        return { error };
       });
   };
 
@@ -38,6 +38,6 @@ module.exports = (userId) => {
     })
     .catch((err) => {
       console.log('Error updating loginNotice ', err);
-      return { data: err };
+      return { err };
     });
 };
