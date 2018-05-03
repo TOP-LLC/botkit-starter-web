@@ -136,7 +136,7 @@ module.exports = (webserver, controller) => {
 
   // Client submits a challenge for review
   debug("Configured /challengesubmit url")
-  webserver.post("/challengemetricstatus", (req, res) => {
+  webserver.post("/challengesubmit", (req, res) => {
     // Challenge will either be intermittent or touchpoint. If Touchpoint, check if all challenges for given session are complete.
 
     debug("Received: ", JSON.stringify(req.body))
