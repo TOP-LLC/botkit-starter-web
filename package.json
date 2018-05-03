@@ -5,7 +5,7 @@
   "main": "bot.js",
   "scripts": {
     "start": "DEBUG=* nodemon bot.js",
-    "dev": "set NODE_ENV=dev && set DEBUG=* && nodemon bot.js"
+    "dev": "set NODE_ENV=dev && nodemon bot.js"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
@@ -60,11 +60,7 @@
     "url": "https://www.trainoptimizeperform.com"
   },
   "homepage": "https://www.trainoptimizeperform.com",
-  "keywords": [
-    "bots",
-    "chatbots",
-    "web chat"
-  ],
+  "keywords": ["bots", "chatbots", "web chat"],
   "author": "senorcodecat@gmail.com",
   "license": "ISC"
 }
