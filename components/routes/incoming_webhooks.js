@@ -65,8 +65,8 @@ module.exports = (webserver, controller) => {
     res.end("Got it!")
   })
 
-  debug("Configured /touchpointtime url")
-  webserver.post("/touchpointtime", async (req, res) => {
+  debug("Configured /touchpointneedsbooked url")
+  webserver.post("/touchpointneedsbooked", async (req, res) => {
     debug("Running touchpoint time event start", JSON.stringify(req.body))
 
     const { user } = req.body.data.TouchpointStatus.node
@@ -84,6 +84,34 @@ module.exports = (webserver, controller) => {
         user.id,
         `Bot-${user.id}`
       )
+      .then(convo => {
+        convo.setVar("firstName", user.firstName)
+        convo.setVar("greeting", "Boom")
+        convo.setVar("number", number)
+        convo.setVar("title", title)
+
+        convo.activate()
+      })
+
+    res.status(200)
+
+    res.end("Got it!")
+  })
+
+  debug("Configured /touchpointbooked url")
+  webserver.post("/touchpointbooked", async (req, res) => {
+    debug("Running touchpoint is booked", JSON.stringify(req.body))
+
+    const { user } = req.body.data.TouchpointStatus.node
+
+    const touchpointStatus = req.body.data.TouchpointStatus.node
+
+    const { number, title } = touchpointStatus.user.progressCurrent.session
+
+    const bot = controller.spawn({})
+
+    controller.studio
+      .get(bot, "Touchpoint Appointment Booked", user.id, `Bot-${user.id}`)
       .then(convo => {
         convo.setVar("firstName", user.firstName)
         convo.setVar("greeting", "Boom")
@@ -256,5 +284,56 @@ module.exports = (webserver, controller) => {
 
     // Now, pass the webhook into be processed
     // controller.handleWebhookPayload(req, res);
+  })
+
+  debug(
+    "Configured get endpoint /challengemetricstatus for messaging about approved or rejected challenges"
+  )
+  webserver.post("/challengemetricstatus", function(req, res) {
+    console.log("Request query for challenge metric status ", req.body)
+
+    let { ChallengeMetric } = req.body.data
+    let { user, challenge, status } = ChallengeMetric.node
+    let { id, firstName, lastName } = user
+    let { title, session } = challenge
+    let { title, number } = session
+
+    const bot = controller.spawn({})
+
+    if (status === "Approved") {
+      controller.studio
+        .get(bot, "Challenge Metric Approved", id, `Bot-${id}`)
+        .then(convo => {
+          convo.setVar("firstName", firstName)
+          convo.setVar("lastName", lastName)
+          convo.setVar("title", title)
+          convo.setVar("userId", id)
+          convo.setVar("sessionTitle", session.title)
+          convo.setVar("sessionNumber", session.number)
+
+          // crucial! call convo.activate to set it in motion
+          convo.activate()
+        })
+
+      res.status(200)
+      res.end("OK")
+    } else {
+      controller.studio
+        .get(bot, "Challenge Metric Rejected", id, `Bot-${id}`)
+        .then(convo => {
+          convo.setVar("firstName", firstName)
+          convo.setVar("lastName", lastName)
+          convo.setVar("title", title)
+          convo.setVar("userId", id)
+          convo.setVar("sessionTitle", session.title)
+          convo.setVar("sessionNumber", session.number)
+
+          // crucial! call convo.activate to set it in motion
+          convo.activate()
+        })
+
+      res.status(200)
+      res.end("OK")
+    }
   })
 }
