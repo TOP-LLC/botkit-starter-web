@@ -1,5 +1,7 @@
 import trainingEventStart from "./../functions/trainingEventStart"
 
+const sendSMS = require("./../functions/sendSMS")
+const rp = require("request-promise")
 const queryUser = require("./../graphcool/queries/get_user_info")
 const updateUserConvoPause = require("./../graphcool/queries/update_user_convo_pause")
 const debug = require("debug")("botkit:incoming_webhooks")
@@ -65,8 +67,8 @@ module.exports = (webserver, controller) => {
     res.end("Got it!")
   })
 
-  debug("Configured /touchpointtime url")
-  webserver.post("/touchpointtime", async (req, res) => {
+  debug("Configured /touchpointneedsbooked url")
+  webserver.post("/touchpointneedsbooked", async (req, res) => {
     debug("Running touchpoint time event start", JSON.stringify(req.body))
 
     const { user } = req.body.data.TouchpointStatus.node
@@ -91,6 +93,68 @@ module.exports = (webserver, controller) => {
         convo.setVar("title", title)
 
         convo.activate()
+      })
+
+    res.status(200)
+
+    res.end("Got it!")
+  })
+
+  debug("Configured /touchpointbooked url")
+  webserver.post("/touchpointbooked", async (req, res) => {
+    debug("Running touchpoint is booked", JSON.stringify(req.body))
+
+    const { user } = req.body.data.TouchpointStatus.node
+
+    const touchpointStatus = req.body.data.TouchpointStatus.node
+
+    const { number, title } = touchpointStatus.user.progressCurrent.session
+
+    const phone = touchpointStatus.user.trainer.userId.phoneSMS
+
+    const trainer = touchpointStatus.user.trainer.userId
+
+    const bot = controller.spawn({})
+
+    controller.studio
+      .get(bot, "Touchpoint Appointment Booked", user.id, `Bot-${user.id}`)
+      .then(convo => {
+        convo.setVar("firstName", user.firstName)
+        convo.setVar("greeting", "Boom")
+        convo.setVar("number", number)
+        convo.setVar("title", title)
+
+        convo.activate()
+      })
+
+    // Send text to Trainer
+    const message = {
+      text: `Heads up, ${trainer.firstName}! ${user.firstName} ${
+        user.lastName
+      } just booked their Touchpoint with you. Log in to verify the time!`
+    }
+    sendSMS(message, phone)
+
+    const options = {
+      method: "POST",
+      uri: "https://hooks.zapier.com/hooks/catch/2208592/fn4tvp/",
+      body: {
+        message: message.text
+      },
+      json: true
+    }
+
+    return rp
+      .post(options)
+      .then(response => {
+        // handle success
+        console.log("Ran Zapier SMS ", JSON.stringify(response))
+        return response
+      })
+      .catch(err => {
+        // handle error
+        console.log("error in Zapier SMS ", err)
+        return err
       })
 
     res.status(200)
@@ -135,8 +199,8 @@ module.exports = (webserver, controller) => {
   })
 
   // Client submits a challenge for review
-  debug("Configured /challengemetricstatus url")
-  webserver.post("/challengemetricstatus", (req, res) => {
+  debug("Configured /challengesubmit url")
+  webserver.post("/challengesubmit", (req, res) => {
     // Challenge will either be intermittent or touchpoint. If Touchpoint, check if all challenges for given session are complete.
 
     debug("Received: ", JSON.stringify(req.body))
@@ -256,5 +320,59 @@ module.exports = (webserver, controller) => {
 
     // Now, pass the webhook into be processed
     // controller.handleWebhookPayload(req, res);
+  })
+
+  debug(
+    "Configured get endpoint /challengemetricstatus for messaging about approved or rejected challenges"
+  )
+  webserver.post("/challengemetricstatus", function(req, res) {
+    console.log("Request query for challenge metric status ", req.body)
+
+    let { ChallengeMetric } = req.body.data
+    let { user, challenge, status } = ChallengeMetric.node
+    let { id, firstName, lastName } = user
+    let { title, session } = challenge
+    let sessionTitle = session.title
+    let { number } = session
+
+    const bot = controller.spawn({})
+
+    if (status === "Approved" && challenge.title !== "Accept Challenge") {
+      controller.studio
+        .get(bot, "Challenge Metric Approved", id, `Bot-${id}`)
+        .then(convo => {
+          convo.setVar("firstName", firstName)
+          convo.setVar("lastName", lastName)
+          convo.setVar("title", title)
+          convo.setVar("userId", id)
+          convo.setVar("sessionTitle", sessionTitle)
+          convo.setVar("sessionNumber", number)
+
+          // crucial! call convo.activate to set it in motion
+          convo.activate()
+        })
+
+      res.status(200)
+      res.end("OK")
+    } else if (challenge.title === "Accept Challenge") {
+      return null
+    } else {
+      controller.studio
+        .get(bot, "Challenge Metric Rejected", id, `Bot-${id}`)
+        .then(convo => {
+          convo.setVar("firstName", firstName)
+          convo.setVar("lastName", lastName)
+          convo.setVar("title", title)
+          convo.setVar("userId", id)
+          convo.setVar("sessionTitle", session.title)
+          convo.setVar("sessionNumber", session.number)
+
+          // crucial! call convo.activate to set it in motion
+          convo.activate()
+        })
+
+      res.status(200)
+      res.end("OK")
+    }
   })
 }
