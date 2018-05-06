@@ -75,9 +75,37 @@ module.exports = (webserver, controller) => {
 
     const touchpointStatus = req.body.data.TouchpointStatus.node
 
+    const { touchpointAppointment: {id, status} } = touchpointStatus
+
+    console.log("Status ", status)
+
     const { number, title } = touchpointStatus.user.progressCurrent.session
 
     const bot = controller.spawn({})
+
+    // If Cancelled
+
+    if (status === "Cancelled") {
+      controller.studio
+      .get(
+        bot,
+        "Touchpoint Appointment Needs Rescheduled",
+        user.id,
+        `Bot-${user.id}`
+      )
+      .then(convo => {
+        convo.setVar("firstName", user.firstName)
+        convo.setVar("greeting", "Boom")
+
+        convo.activate()
+      })
+
+    res.status(200)
+
+    return res.end("Got it!")
+    }
+
+    // If not cancelled
 
     controller.studio
       .get(
@@ -132,6 +160,64 @@ module.exports = (webserver, controller) => {
       text: `Heads up, ${trainer.firstName}! ${user.firstName} ${
         user.lastName
       } just booked their Touchpoint with you. Log in to verify the time!`
+    }
+    sendSMS(message, phone)
+
+    const options = {
+      method: "POST",
+      uri: "https://hooks.zapier.com/hooks/catch/2208592/fn4tvp/",
+      body: {
+        message: message.text
+      },
+      json: true
+    }
+
+    return rp
+      .post(options)
+      .then(response => {
+        // handle success
+        console.log("Ran Zapier SMS ", JSON.stringify(response))
+        return response
+      })
+      .catch(err => {
+        // handle error
+        console.log("error in Zapier SMS ", err)
+        return err
+      })
+
+    res.status(200)
+
+    res.end("Got it!")
+  })
+
+  debug("Configured /touchpointaccepted url")
+  webserver.post("/touchpointaccepted", async (req, res) => {
+    debug("Running touchpoint is accepted", JSON.stringify(req.body))
+
+    const user = req.body.data.TouchpointAppointment.node.client
+
+    const touchpointAppointment = req.body.data.TouchpointAppointment.node
+
+    const phone = touchpointAppointment.client.trainer.userId.phoneSMS
+
+    const trainer = touchpointAppointment.client.trainer.userId
+
+    const bot = controller.spawn({})
+
+    controller.studio
+      .get(bot, "Touchpoint Appointment Accepted", user.id, `Bot-${user.id}`)
+      .then(convo => {
+        convo.setVar("firstName", user.firstName)
+        convo.setVar("greeting", "Boom")
+
+        convo.activate()
+      })
+
+    // Send text to Trainer
+    const message = {
+      text: `Hey ${trainer.firstName}! ${user.firstName} ${
+        user.lastName
+      }'s Touchpoint appointment has been confirmed. You're good to go!`
     }
     sendSMS(message, phone)
 
