@@ -69,15 +69,18 @@ module.exports = (webserver, controller) => {
 
   debug("Configured /touchpointneedsbooked url")
   webserver.post("/touchpointneedsbooked", async (req, res) => {
-    debug("Running touchpoint time event start", JSON.stringify(req.body))
+    debug("Running touchpoint needs booked event start", JSON.stringify(req.body))
 
     const { user } = req.body.data.TouchpointStatus.node
 
     const touchpointStatus = req.body.data.TouchpointStatus.node
 
-    const { touchpointAppointment: {id, status} } = touchpointStatus
+    let status = null
 
-    console.log("Status ", status)
+    if (touchpointStatus.touchpointAppointment) {
+      let { touchpointAppointment: {id, status} } = touchpointStatus
+      console.log("Status ", status)
+    }
 
     const { number, title } = touchpointStatus.user.progressCurrent.session
 
