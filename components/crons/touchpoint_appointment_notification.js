@@ -5,7 +5,7 @@ const rp = require('request-promise');
 
 const getAllTouchpointAppointments = require('./../graphcool/queries/get_all_touchpoint_appointments')
 
-module.exports = function() {
+module.exports = function(controller) {
 
   console.log("Running touchpoint appointment notifications")
 
