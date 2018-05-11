@@ -22,10 +22,13 @@ module.exports = (controller) => {
         convo.setVar("sprintTitle", progressCurrent.sprint.title)
         convo.setVar("sprintNumber", progressCurrent.sprint.number)
         convo.setVar("challengeTitle", progressCurrent.challenges[0].title)
-        convo.setVar("touchpointDate", dateFormat(touchpointStatus.touchpointAppointment.date, "fullDate"))
         convo.setVar("trainer", userData.trainer.firstName)
         convo.setVar("touchpointStatus", touchpointStatus.status)
         console.log("Touchpoint status is ", touchpointStatus)
+
+        if (touchpointStatus.touchpointAppointment) {
+            convo.setVar("touchpointDate", dateFormat(touchpointStatus.touchpointAppointment.date, "fullDate"))
+        }
 
         // do some preparation before the conversation starts...
         // for example, set variables to be used in the message templates

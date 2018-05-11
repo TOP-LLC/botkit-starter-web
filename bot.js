@@ -44,6 +44,9 @@ require(`${__dirname}/components/plugin_identity.js`)(controller);
 // Enable Dashbot.io plugin
 require(__dirname + "/components/plugin_dashbot.js")(controller)
 
+// Load Cron Jobs
+require(`${__dirname}/components/crons/touchpoint_appointment_notification.js`)(controller);
+
 // Testing functions
 // require(`${__dirname}/components/graphcool/mutations/update_user_progressCurrent_after_onboarding.js`)(controller);
 

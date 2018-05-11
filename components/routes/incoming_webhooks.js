@@ -4,6 +4,8 @@ const sendSMS = require("./../functions/sendSMS")
 const rp = require("request-promise")
 const queryUser = require("./../graphcool/queries/get_user_info")
 const updateUserConvoPause = require("./../graphcool/queries/update_user_convo_pause")
+const updateTouchpointStatus = require("./../graphcool/mutations/update_touchpoint_status_touchpointtime")
+const updateTouchpointAppointment = require("./../graphcool/mutations/update_touchpoint_appointment_reminder")
 const debug = require("debug")("botkit:incoming_webhooks")
 
 module.exports = (webserver, controller) => {
@@ -131,6 +133,44 @@ module.exports = (webserver, controller) => {
     res.end("Got it!")
   })
 
+  debug("Configured /touchpointneedsrescheduled url")
+  webserver.post("/touchpointneedsrescheduled", async (req, res) => {
+    debug("Running touchpoint needs rescheduled event start", JSON.stringify(req.body))
+
+    const { user } = req.body.data.TouchpointStatus.node
+
+    const touchpointStatus = req.body.data.TouchpointStatus.node
+
+    let status = null
+
+    if (touchpointStatus.touchpointAppointment) {
+      let { touchpointAppointment: {id, status} } = touchpointStatus
+      console.log("Status ", status)
+    }
+
+    const { number, title } = touchpointStatus.user.progressCurrent.session
+
+    const bot = controller.spawn({})
+
+      controller.studio
+      .get(
+        bot,
+        "Touchpoint Appointment Needs Rescheduled",
+        user.id,
+        `Bot-${user.id}`
+      )
+      .then(convo => {
+        convo.setVar("firstName", user.firstName)
+        convo.setVar("greeting", "Boom")
+
+        convo.activate()
+      })
+
+    res.status(200)
+
+    res.end("Got it!")
+  })
+
   debug("Configured /touchpointbooked url")
   webserver.post("/touchpointbooked", async (req, res) => {
     debug("Running touchpoint is booked", JSON.stringify(req.body))
@@ -249,6 +289,142 @@ module.exports = (webserver, controller) => {
     res.status(200)
 
     res.end("Got it!")
+  })
+
+  debug("Configured /touchpointreminder url")
+  webserver.post("/touchpointreminder", async (req, res) => {
+    debug("Running touchpoint reminder", JSON.stringify(req.body))
+
+    
+    const { touchPoint } = req.body
+
+    const user = touchPoint.client
+
+    const phone = touchPoint.trainer.phone
+
+    const { trainer } = touchPoint
+
+    const count = touchPoint.reminder
+
+    let updatedStatus = await updateTouchpointAppointment(touchPoint.id, count)
+
+    const bot = controller.spawn({})
+
+    controller.studio
+      .get(bot, "Touchpoint Appointment Hour Reminder", user.id, `Bot-${user.id}`)
+      .then(convo => {
+        convo.setVar("firstName", user.firstName)
+        convo.setVar("trainer", trainer.firstName)
+
+        convo.activate()
+      })
+
+    // Send text to Trainer
+    const message = {
+      text: `Hey ${trainer.firstName}! This is a reminder that you have a Touchpoint with ${user.firstName} ${
+        user.lastName
+      } in one hour. Log into the client page to review their material and start the call when you're ready.`
+    }
+    sendSMS(message, phone)
+
+    const options = {
+      method: "POST",
+      uri: "https://hooks.zapier.com/hooks/catch/2208592/fn4tvp/",
+      body: {
+        message: message.text
+      },
+      json: true
+    }
+
+    return rp
+      .post(options)
+      .then(response => {
+        // handle success
+        console.log("Ran Zapier SMS ", JSON.stringify(response))
+        return response
+      })
+      .catch(err => {
+        // handle error
+        console.log("error in Zapier SMS ", err)
+        return err
+      })
+
+    res.status(200)
+
+    res.end("Got it!")
+  })
+
+  debug("Configured /touchpointtime url")
+  webserver.post("/touchpointtime", async (req, res) => {
+    debug("Running touchpoint time", JSON.stringify(req.body))
+
+    try {
+
+    const { touchPoint } = req.body
+
+    const user = touchPoint.client
+
+    const phone = touchPoint.trainer.phone
+
+    const { trainer } = touchPoint
+
+    const count = touchPoint.reminder
+
+    let updatedStat = await updateTouchpointAppointment(touchPoint.id, count)
+    let updatedStatus = await updateTouchpointStatus(user.touchpointStatus.id)
+
+    debug("Updated touchpoint status is ", updatedStatus)
+
+    const bot = controller.spawn({})
+
+    controller.studio
+      .get(bot, "Touchpoint Appointment 10 Minute Reminder", user.id, `Bot-${user.id}`)
+      .then(convo => {
+        convo.setVar("firstName", user.firstName)
+        convo.setVar("trainer", trainer.firstName)
+
+        convo.activate()
+      })
+
+    // Send text to Trainer
+    const message = {
+      text: `Hey ${trainer.firstName}! Your Touchpoint with ${user.firstName} ${
+        user.lastName
+      } starts in 10 minutes. Log into the client page to review their material and start the call when you're ready.`
+    }
+
+    sendSMS(message, phone)
+
+    const options = {
+      method: "POST",
+      uri: "https://hooks.zapier.com/hooks/catch/2208592/fn4tvp/",
+      body: {
+        message: message.text
+      },
+      json: true
+    }
+
+      rp
+      .post(options)
+      .then(response => {
+        // handle success
+        console.log("Ran Zapier SMS ", JSON.stringify(response))
+        return response
+      })
+      .catch(err => {
+        // handle error
+        console.log("error in Zapier SMS ", err)
+        return err
+      })
+
+    res.status(200)
+
+    res.end("Got it!")
+
+    } catch (err) {
+      console.log("Error is IN THIS FUNCTION ", err)
+    }
+
   })
 
   debug("Configured /trainingeventstart url")
