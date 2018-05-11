@@ -48,7 +48,7 @@ return schedule.scheduleJob('*/5 * * * *', function() {
           
               const options = {
                 method: 'POST',
-                uri: 'http://topmortgage.pagekite.me/touchpointreminder',
+                uri: 'http://thetopsystem.com/touchpointreminder',
                 body: {
                   touchPoint: tp
                 },
@@ -71,7 +71,7 @@ return schedule.scheduleJob('*/5 * * * *', function() {
           
                 const options = {
                   method: 'POST',
-                  uri: 'http://topmortgage.pagekite.me/touchpointtime',
+                  uri: 'http://thetopsystem.com/touchpointtime',
                   body: {
                     touchPoint: tp
                   },
