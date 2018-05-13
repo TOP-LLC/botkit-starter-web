@@ -127,7 +127,7 @@ module.exports = (Botkit, config) => {
           url =
             'https://docs.google.com/forms/d/e/1FAIpQLSdjwS19bEvM48t53SMFGUKsDqva4eNwF16rkQO7UrkfFj81Gg/viewform';
         } else {
-          url = message.url ? `http://toptraining.netlify.com${message.url}` : null;
+          url = message.url ? `http://topmortgage.co${message.url}` : null;
         }
 
         const messageUrl = message.url ? `${message.text} ${url}` : message.text;
