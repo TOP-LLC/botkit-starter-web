@@ -5,7 +5,7 @@ module.exports = (user, convoPause) => {
 
   console.log('User is ', user);
 
-  const mutationQuery = `
+  const mutationQuery = graphql`
     ($id: ID!, $convoPause: Boolean) {
       updateUser(
 				id: $id
@@ -13,7 +13,6 @@ module.exports = (user, convoPause) => {
       )
       {
         id
-        psid
 				firstName
 				lastName
 				convoPause

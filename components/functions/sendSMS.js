@@ -2,7 +2,7 @@ const debug = require('debug')('botkit:sendSMS');
 const rp = require('request-promise');
 
 module.exports = (message, phone) => {
-  debug('Running handleSMS');
+  debug('Running handleSMS', message, phone);
 
   const options = {
     method: 'POST',

@@ -32,6 +32,7 @@
     "botkit": "^0.6.12",
     "botkit-storage-mongo": "^1.0.6",
     "botkit-studio-metrics": "0.0.4",
+    "dashbot": "^9.9.0",
     "dateformat": "^3.0.3",
     "debug": "^3.1.0",
     "express": "^4.15.3",
@@ -40,15 +41,17 @@
     "form-data": "^2.3.2",
     "lokka": "^1.7.0",
     "lokka-transport-http": "^1.6.1",
+    "moment": "^2.22.1",
     "mongoose": "^4.13.7",
     "node-env-file": "^0.1.8",
+    "node-schedule": "^1.3.0",
     "nodemailer": "^4.6.4",
     "nodemon": "^1.17.2",
     "pubnub": "^4.20.2",
     "querystring": "^0.2.0",
     "request": "^2.85.0",
     "request-promise": "^4.2.2",
-    "underscore": "^1.8.3",
+    "underscore": "^1.9.0",
     "wordfilter": "^0.2.6"
   },
   "repository": {
@@ -59,7 +62,11 @@
     "url": "https://www.trainoptimizeperform.com"
   },
   "homepage": "https://www.trainoptimizeperform.com",
-  "keywords": ["bots", "chatbots", "web chat"],
+  "keywords": [
+    "bots",
+    "chatbots",
+    "web chat"
+  ],
   "author": "senorcodecat@gmail.com",
   "license": "ISC"
 }

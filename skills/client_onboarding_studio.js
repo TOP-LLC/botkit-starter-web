@@ -219,6 +219,7 @@ module.exports = (controller) => {
         })
         .catch((error) => {
           debug('Error updating events: ', error);
+          return {error}
         });
 
       // do something with the responses

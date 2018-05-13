@@ -1,3 +1,5 @@
+import { platform } from 'os';
+
 const PubNub = require('pubnub');
 const debug = require('debug')('botkit:pubnub');
 const rp = require('request-promise');
@@ -305,10 +307,14 @@ module.exports = (Botkit, config) => {
     debug('Format debug', message);
     if (message.train === 'current') {
       platform_message.url = '/train/current';
+    } else if (message.optimize === 'NeedsBooked' || message.optimize === 'TouchpointTime' || message.optimize === 'RejectedChallenges') {
+      platform_message.url = '/optimize'
     } else if (message.form === 'google') {
       platform_message.url =
         'https://docs.google.com/forms/d/e/1FAIpQLSdjwS19bEvM48t53SMFGUKsDqva4eNwF16rkQO7UrkfFj81Gg/viewform';
       platform_message.form = true;
+    } else if (message.perform === 'loanmetric') {
+      platform_message.url = '/track'
     }
     platform_message.text = message.text;
     platform_message.channel = message.channel;
