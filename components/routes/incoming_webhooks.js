@@ -2,10 +2,14 @@ import trainingEventStart from "./../functions/trainingEventStart"
 
 const sendSMS = require("./../functions/sendSMS")
 const rp = require("request-promise")
+const moment = require("moment")
 const queryUser = require("./../graphcool/queries/get_user_info")
 const updateUserConvoPause = require("./../graphcool/queries/update_user_convo_pause")
 const updateTouchpointStatus = require("./../graphcool/mutations/update_touchpoint_status_touchpointtime")
 const updateTouchpointAppointment = require("./../graphcool/mutations/update_touchpoint_appointment_reminder")
+const updateUserStatus = require("./../graphcool/mutations/update_user_submittedForm")
+const getUserId = require("./../graphcool/queries/get_user_from_email")
+const randomGreeting = require("./../functions/randomGreeting")
 const debug = require("debug")("botkit:incoming_webhooks")
 
 module.exports = (webserver, controller) => {
@@ -45,6 +49,76 @@ module.exports = (webserver, controller) => {
       res.status(200)
       res.send("ok")
     })
+  })
+
+  // Trigger when client completes a Google Form
+  debug("Configured /submitform url")
+  webserver.post("/submitform", async (req, res) => {
+    debug("Running Google form submitted endpoint", req)
+
+    const { email } = req.headers
+
+    console.log("Email is ", email)
+
+    if (email) {
+      const message = {
+        text: email
+      }
+      sendSMS(message, '9517647045')
+      try {
+        const userData = await getUserId(email)
+        const updatedStatus = await updateUserStatus(userData.userId, userData.submittedForm)
+        console.log("Updated user data is ", updatedStatus)
+      } catch (err) {
+        console.log("Got an error in updating user submittedForm ", err)
+        return {data: err}
+      }
+    } else {
+      res.status(200)
+      res.end("No email found, ignoring or error")
+    }
+
+    res.status(200)
+
+    res.end(`Email received is ${email}`)
+  })
+
+  debug("Configured /sprintreminder url")
+  webserver.post("/sprintreminder", async (req, res) => {
+    debug("Running sprint reminder", JSON.stringify(req.body))
+
+    const { progressCurrent } = req.body
+
+    const { sprint, session, cycle, sprintStart } = progressCurrent
+
+    const formattedDate = moment(sprintStart).fromNow()
+
+    const user = progressCurrent.user
+    
+    const greeting = randomGreeting()
+
+    const bot = controller.spawn({})
+
+    controller.studio
+      .get(bot, "Sprint Reminder", user.id, `Bot-${user.id}`)
+      .then(convo => {
+        convo.setVar("firstName", user.firstName)
+        convo.setVar("sprintTitle", sprint.title)
+        convo.setVar("sprintNumber", sprint.number)
+        convo.setVar("sessionTitle", session.title)
+        convo.setVar("sessionNumber", session.number)
+        convo.setVar("cycleTitle", cycle.title)
+        convo.setVar("cycleNumber", cycle.number)
+        convo.setVar("startDate", formattedDate)
+        convo.setVar("sprintDuration", sprint.duration)
+        convo.setVar("greeting", greeting)
+                
+        convo.activate()
+      })
+
+    res.status(200)
+
+    res.end("Got it!")
   })
 
   debug("Configured /onboarstart url")
