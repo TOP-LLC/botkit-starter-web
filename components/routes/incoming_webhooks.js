@@ -17,6 +17,7 @@ module.exports = (webserver, controller) => {
   webserver.post("/botkit/receive", (req, res) => {
     // respond to Slack that the webhook has been received.
     res.status(200)
+    res.send("Got Botkit Message")
 
     // Now, pass the webhook into be processed
     controller.handleWebhookPayload(req, res)
@@ -47,7 +48,7 @@ module.exports = (webserver, controller) => {
     return setConvoPause().then(result => {
       console.log("Completed user convo pause ", result)
       res.status(200)
-      res.send("ok")
+      res.send("Dashbot Pause Ran")
     })
   })
 
@@ -238,6 +239,69 @@ module.exports = (webserver, controller) => {
         convo.setVar("greeting", "Boom")
 
         convo.activate()
+      })
+
+    res.status(200)
+
+    res.end("Got it!")
+  })
+
+  
+  debug("Configured /touchpointreview url")
+  webserver.post("/touchpointreview", async (req, res) => {
+    debug("Running touchpoint review function", JSON.stringify(req.body))
+
+    const { user } = req.body.data.TouchpointStatus.node
+
+    const touchpointStatus = req.body.data.TouchpointStatus.node
+
+    const { number, title } = touchpointStatus.user.progressCurrent.session
+
+    const phone = touchpointStatus.user.trainer.userId.phoneSMS
+
+    const trainer = touchpointStatus.user.trainer.userId
+
+    const bot = controller.spawn({})
+
+    controller.studio
+      .get(bot, "Touchpoint Review Requested", user.id, `Bot-${user.id}`)
+      .then(convo => {
+        convo.setVar("firstName", user.firstName)
+        convo.setVar("greeting", "Boom")
+        convo.setVar("number", number)
+        convo.setVar("title", title)
+
+        convo.activate()
+      })
+
+    // Send text to Trainer
+    const message = {
+      text: `Hey ${trainer.firstName}! ${user.firstName} ${
+        user.lastName
+      } has some submitted challenges that need your review! Check out their client page to Pass or Reject them.`
+    }
+    sendSMS(message, phone)
+
+    const options = {
+      method: "POST",
+      uri: "https://hooks.zapier.com/hooks/catch/2208592/fn4tvp/",
+      body: {
+        message: message.text
+      },
+      json: true
+    }
+
+    return rp
+      .post(options)
+      .then(response => {
+        // handle success
+        console.log("Ran Zapier SMS ", JSON.stringify(response))
+        return response
+      })
+      .catch(err => {
+        // handle error
+        console.log("error in Zapier SMS ", err)
+        return err
       })
 
     res.status(200)

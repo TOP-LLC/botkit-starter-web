@@ -1,5 +1,7 @@
 require('babel-register');
 require('babel-polyfill');
+var winston = require('winston');
+require('winston-loggly-bulk');
 
 const env = require('node-env-file');
 
@@ -70,6 +72,15 @@ require('fs')
 controller.startTicking();
 
 console.log(`I AM ONLINE! COME TALK TO ME: http://localhost:${process.env.PORT || 3000}`);
+ 
+ winston.add(winston.transports.Loggly, {
+    token: "1067bc45-bd5a-4a5f-9c9f-08c357f99adf",
+    subdomain: "top",
+    tags: ["Winston-NodeJS"],
+    json:true
+});
+
+winston.log('info',"Hello World from Node.js!");
 
 // This captures and evaluates any message sent to the bot as a DM
 // or sent to the bot in the form "@bot message" and passes it to

@@ -5,9 +5,29 @@ const debug = require('debug')('botkit:webserver');
 const http = require('http');
 const fs = require('fs');
 const hbs = require('express-hbs');
+const winston = require('winston');
+const expressWinston = require('express-winston');
+require('winston-loggly-bulk');
 
 module.exports = (controller) => {
   const webserver = express();
+
+  // Place the express-winston logger before the router.
+  webserver.use(expressWinston.logger({
+      transports: [
+          new winston.transports.Console({
+              json: true,
+              colorize: true
+          }),
+          new winston.transports.Loggly({
+              subdomain: 'top',
+              inputToken: '1067bc45-bd5a-4a5f-9c9f-08c357f99adf',
+              json: true,
+              tags: ["NodeJS-Express"]
+          })
+      ]
+  }));
+
   webserver.use(bodyParser.json());
 
   // set up handlebars ready for tabs
