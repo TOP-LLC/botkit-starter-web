@@ -19,7 +19,6 @@ module.exports = function(controller) {
 
 // Run every Friday at 8am EST
 return schedule.scheduleJob('0 9 * * 5', function() {
-  // return schedule.scheduleJob('*/1 * * * *', function() {
 
   const runEverything = async () => {
 
