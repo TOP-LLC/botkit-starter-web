@@ -597,7 +597,6 @@ module.exports = (webserver, controller) => {
       })
 
     res.status(200)
-
     res.end("Got it!")
   })
 
