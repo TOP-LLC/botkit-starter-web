@@ -52,6 +52,7 @@
     "querystring": "^0.2.0",
     "request": "^2.85.0",
     "request-promise": "^4.2.2",
+    "twilio": "^3.17.1",
     "underscore": "^1.9.0",
     "winston-loggly-bulk": "^2.0.2",
     "wordfilter": "^0.2.6"

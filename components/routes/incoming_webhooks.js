@@ -1,6 +1,6 @@
 import trainingEventStart from "./../functions/trainingEventStart"
 
-const sendSMS = require("./../functions/sendSMS")
+const sendSMS = require("./../functions/twilioSMS")
 const rp = require("request-promise")
 const moment = require("moment")
 const queryUser = require("./../graphcool/queries/get_user_info")
