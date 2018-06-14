@@ -50,7 +50,7 @@ return schedule.scheduleJob(rule, function() {
           
               const options = {
                 method: 'POST',
-                uri: 'http://topmortgage.pagekite.me/sprintreminder',
+                uri: 'http://thetopsystem.com/sprintreminder',
                 body: {
                   progressCurrent: pc
                 },
