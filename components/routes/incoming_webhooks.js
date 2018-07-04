@@ -610,8 +610,8 @@ module.exports = (webserver, controller) => {
     const {
       type,
       title,
+      sprint,
       session,
-      challengeCriteria,
       activities,
       reviewType
     } = req.body.data.ChallengeMetric.node.challenge
@@ -660,8 +660,8 @@ module.exports = (webserver, controller) => {
             convo.setVar("title", title)
             convo.setVar("type", type)
             convo.setVar("userId", id)
-            convo.setVar("sessionTitle", session.title)
-            convo.setVar("sessionNumber", session.number)
+            convo.setVar("sessionTitle", sprint.session.title)
+            convo.setVar("sessionNumber", sprint.session.number)
 
             // crucial! call convo.activate to set it in motion
             convo.activate()
@@ -728,14 +728,14 @@ module.exports = (webserver, controller) => {
     "Configured get endpoint /challengemetricstatus for messaging about approved or rejected challenges"
   )
   webserver.post("/challengemetricstatus", function(req, res) {
-    console.log("Request query for challenge metric status ", req.body)
+    console.log("Request query for challenge metric status ", JSON.stringify(req.body))
 
     let { ChallengeMetric } = req.body.data
     let { user, challenge, status } = ChallengeMetric.node
     let { id, firstName, lastName } = user
-    let { title, session } = challenge
-    let sessionTitle = session.title
-    let { number } = session
+    let { title, sprint } = challenge
+    let sessionTitle = sprint.session.title
+    let { number } = sprint.session
 
     const bot = controller.spawn({})
 
