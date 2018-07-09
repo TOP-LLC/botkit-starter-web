@@ -1,25 +1,12 @@
-/*
-Query for all published sprints for T1 Program
-Query for startDate for team schedule (or calculate startDate based on next Tuesday > 3 days away)
-Based on numerical order, calculate total number of sprints in array
-Calculate the dates for every Monday and Thursday based on length of sprints array
-Put all values into an array
-For every sprint key, assign first array value as value until end
-Run createEvent mutation . . .
-  for every key:value pair, create a new event of type Sprint
-Add each event to Schedule with updateSchedule mutation
-
-*/
 const schedule = require('node-schedule')
 const _ = require('underscore')
-const rp = require('request-promise');
 const later = require("later")
 const lokkaClient = require("./../lokka_graphcool.js")
 const _ = require("lodash")
 
 module.exports = async function () {
 
-    return schedule.scheduleJob('0 1 1 * 0', function() {
+    return schedule.scheduleJob('1 1 1 * *', function() {
 
 	console.log("Start create all Touchpoint Appointments")
 
