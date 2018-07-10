@@ -1,5 +1,4 @@
 const schedule = require('node-schedule')
-const _ = require('underscore')
 const later = require("later")
 const lokkaClient = require("./../lokka_graphcool.js")
 const _ = require("lodash")
