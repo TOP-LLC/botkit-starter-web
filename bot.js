@@ -52,7 +52,7 @@ require(`${__dirname}/components/crons/weighin_weekly_notification.js`)(controll
 require(`${__dirname}/components/crons/sprint_not_complete_reminder.js`)(controller);
 
 // Testing functions
-// require(`${__dirname}/components/graphcool/mutations/update_user_progressCurrent_after_onboarding.js`)(controller);
+require(`${__dirname}/components/crons/touchpoint_appointment_creation.js`)(controller);
 
 // enable advanced botkit studio metrics
 // and capture the metrics API to use with the identity plugin!
