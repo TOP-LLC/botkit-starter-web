@@ -4,11 +4,9 @@ module.exports = function () {
 
     return lokkaClient.query(`
     {
-      allTouchpointAppointments(filter: {OR: [
-        {client: {id_not: null} status_not: Cancelled},
-        {client: {id_not: null} status_not: Rejected},
-        {client: {id_not: null} status_not: Rescheduled},
-        {client: {id_not: null} status_not: Approved}
+      allTouchpointAppointments(filter: {AND: [
+        {client: {id_not: null}},
+        {OR: [{status: null}, {status: Accepted}, {status: Pending}]}
       ]}) {
         id
         date
@@ -34,6 +32,7 @@ module.exports = function () {
         }
       }
     }
+    
     `).then(result => {
       return result.allTouchpointAppointments
     })
