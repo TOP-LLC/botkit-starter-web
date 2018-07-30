@@ -445,6 +445,7 @@ module.exports = (webserver, controller) => {
     const count = touchPoint.reminder
 
     let updatedStatus = await updateTouchpointAppointment(touchPoint.id, count)
+    console.log("Updated touchpoint appointment reminder count ", updatedStatus)
 
     const bot = controller.spawn({})
 
