@@ -13,6 +13,14 @@ module.exports = () => {
           attendedTalks {
             id
           }
+          seriesChallengeSubmissions {
+            id
+            fileURL
+            seriesChallenge {
+              id
+              current
+            }
+          }
         }
       }    
       `)

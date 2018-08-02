@@ -53,7 +53,7 @@ require(`${__dirname}/components/crons/sprint_not_complete_reminder.js`)(control
 // require(`${__dirname}/components/crons/daily_report.js`)(controller);
 
 // Testing functions
-require(`${__dirname}/components/crons/daily_schedule.js`)();
+require(`${__dirname}/components/crons/daily_habits_and_challenge.js`)();
 
 // enable advanced botkit studio metrics
 // and capture the metrics API to use with the identity plugin!

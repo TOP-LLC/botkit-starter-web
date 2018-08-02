@@ -6,7 +6,7 @@ module.exports = () => {
   return lokkaClient
     .query(`
         query {
-        allTalks (filter: {status: Past} orderBy: date_DESC last: 1) {
+        allTalks (filter: {status: Past} orderBy: date_DESC first: 1) {
             id
             status
             title

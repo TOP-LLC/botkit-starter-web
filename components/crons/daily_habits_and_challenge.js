@@ -1,8 +1,12 @@
 const schedule = require('node-schedule-tz');
 const twilio = require('twilio');
+const _ = require('lodash');
+const moment = require('moment');
 
-const getAllActiveUsers = require('./../graphcool/queries/get_all_active_users_info')
-const getAllTasksData = require('./../graphcool/queries/get_all_tasks_data')
+const getAllActiveUsers = require('./../graphcool/queries/get_all_active_users_info');
+const getCurrentChallenge = require('./../graphcool/queries/get_current_challenge');
+const getAllReminders = require('./../graphcool/queries/get_all_reminders');
+const getActiveHabit = require('./../graphcool/queries/get_active_habit');
 
 const greetings = ["What's up", 'Hey', 'Boom', 'Buenos dias', 'Yo', 'Listen up', 'Salutations', 'Hola', 'Aloha'];
 
@@ -15,10 +19,10 @@ const authToken = process.env.TWILIO_AUTH_TOKEN
 
 const client = new twilio(accountSid, authToken);
 
-module.exports = function(controller) {
+module.exports = function() {
 
 // Run every weekday morning at 10:30 am EST
-return schedule.scheduleJob('daily report', '30 14 * * 1-5 *', 'Atlantic/Reykjavik', function() {
+// return schedule.scheduleJob('daily report', '30 14 * * 1-5 *', 'Atlantic/Reykjavik', function() {
 
   /*
     1. Every weekday morning at 10:30 am
@@ -28,25 +32,31 @@ return schedule.scheduleJob('daily report', '30 14 * * 1-5 *', 'Atlantic/Reykjav
     5. Get yesterday's event details
     6. Send to Twilio
     7. Repeat for each user
-
   */
 
   const runEverything = async () => {
 
-    const sendAllReminders = async (allUsers, allData) => {
+    const sendAllReminders = async (allUsers, currentChallenge, allReminders, activeHabit) => {
 
-      let {} = allData
+        const formattedDates = allReminders.map(reminder => {
+          console.log("Reminder date before is ", reminder.date)
+          reminder.date = reminder.date.slice(0, 10)
+          console.log("Reminder date is ", reminder.date)
+          return reminder
+        })
+        const currentReminder = _.find(formattedDates, o => o.date === moment().format("YYYY-MM-DD"))
+        console.log("Current reminder is ", currentReminder)
 
       return allUsers.map(u => {
-        const { phoneSMS, challenge, dailyHabits } = u
+        const { phoneSMS, seriesChallengeSubmissions } = u
 
-        let challengeMessage = challenge.status === 'Submitted' ? false : true
-        let challengeSet = `Remember to keep working on your challenge for this Talk series due ${challenge.date}. Today's challenge set: ${challenge.set}`
-        let dailyHabitMessage = `And here's one of today's habits to build: ${dailyHabits}`
+        let challengeMessage = _.includes(seriesChallengeSubmissions, o => o.id === currentChallenge.id)
+        let challengeSet = `Remember to keep working on your challenge to ${currentChallenge.description} for the current Talk series on ${currentChallenge.talk.title} due sometime. And here's today's challenge reminder: ${currentReminder.message}`
+        let dailyHabitMessage = `And here's one of today's habits to build: ${activeHabit.message}`
 
         client.messages.create({
-          body: `${greeting}! ${challengeMessage ? challengeSet : 'You already submitted your challenge. Nice work!'} ${dailyHabitMessage}`,
-          to: `+1${phoneSMS}`,
+          body: `${greeting}! ${challengeMessage ? 'You already submitted your challenge. Nice work!' : challengeSet} ${dailyHabitMessage}`,
+          to: `+19517647045`,
           from: '+17874884263 ' 
         })
         .then((message) => console.log(message.sid));
@@ -57,9 +67,10 @@ return schedule.scheduleJob('daily report', '30 14 * * 1-5 *', 'Atlantic/Reykjav
     try {
       const allUsers = await getAllActiveUsers()
       console.log("All users are ", allUsers)
-      const allData = await getAllTasksData()
-      console.log("All report data is ", allData)
-      const allReports = await sendAllReminders(allUsers, allData)
+      const currentChallenge = await getCurrentChallenge()
+      const allReminders = await getAllReminders()
+      const activeHabit = await getActiveHabit()
+      const allReports = await sendAllReminders(allUsers, currentChallenge, allReminders, activeHabit)
       return allReports
   
     } catch (err) {
@@ -70,6 +81,6 @@ return schedule.scheduleJob('daily report', '30 14 * * 1-5 *', 'Atlantic/Reykjav
   }
   return runEverything().then(result => console.log(result))
 
-});
+// });
 
 }

@@ -56,7 +56,7 @@ module.exports = function() {
         }
 
       message.prevEvent = `${moment(prevEvent.date).fromNow()}, ${prevEvent.trainer.firstName} hosted ${prevEvent.type === 'Office Hours' ? 'an' : 'a'} ${prevEvent.type} on ${prevEvent.title}.`
-      message.currentEvent = `${moment(currentEvent.date).calendar()} EST, ${currentEvent.trainer.firstName} is ${currentEventMessage}${currentEvent.type === 'Series' ? currentEvent.title + " " : currentEvent.type === 'Booster' ? currentEvent.title + " " : "." } ${cta}`
+      message.currentEvent = `${moment(currentEvent.date).calendar()} EST, ${currentEvent.trainer.firstName} is ${currentEventMessage} ${currentEvent.type === 'Series' ? currentEvent.title + "." : currentEvent.type === 'Booster' ? currentEvent.title + "." : "." } ${cta}`
 
       allUsers.map(u => {
         const { phoneSMS, firstName, attendedTalks } = u 
