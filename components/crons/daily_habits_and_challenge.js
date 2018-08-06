@@ -22,7 +22,7 @@ const client = new twilio(accountSid, authToken);
 module.exports = function() {
 
 // Run every weekday morning at 10:30 am EST
-// return schedule.scheduleJob('daily report', '30 14 * * 1-5 *', 'Atlantic/Reykjavik', function() {
+return schedule.scheduleJob('daily report', '30 15 * * 1-5', 'Atlantic/Reykjavik', function() {
 
   /*
     1. Every weekday morning at 10:30 am
@@ -51,7 +51,7 @@ module.exports = function() {
         const { phoneSMS, seriesChallengeSubmissions } = u
 
         let challengeMessage = _.includes(seriesChallengeSubmissions, o => o.id === currentChallenge.id)
-        let challengeSet = `Remember to keep working on your challenge to ${currentChallenge.description} for the current Talk series on ${currentChallenge.talk.title} due sometime. And here's today's challenge reminder: ${currentReminder.message}`
+        let challengeSet = `Remember to keep working on your challenge: ${currentChallenge.description}, for the current Talk series on ${currentChallenge.talk.title} due sometime. And here's today's challenge reminder: ${currentReminder.message}`
         let dailyHabitMessage = `And here's one of today's habits to build: ${activeHabit.message}`
 
         client.messages.create({
@@ -81,6 +81,6 @@ module.exports = function() {
   }
   return runEverything().then(result => console.log(result))
 
-// });
+});
 
 }

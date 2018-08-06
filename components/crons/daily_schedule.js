@@ -23,7 +23,7 @@ const client = new twilio(accountSid, authToken);
 module.exports = function() {
 
 // Run every weekday morning at 10 am EST
-// return schedule.scheduleJob('daily schedule', '0 14 * * 1-5 *', 'Atlantic/Reykjavik', function() {
+return schedule.scheduleJob('daily schedule', '26 15 * * 1-5', 'Atlantic/Reykjavik', function() {
 
   /*
     1. Every weekday morning at 10 am EST
@@ -88,6 +88,6 @@ module.exports = function() {
   }
   return runEverything().then(result => console.log(result)).catch((err) => console.log("Error running everything in daily schedule ", err)) 
 
-// });
+});
 
 }
