@@ -54,7 +54,7 @@ require(`${__dirname}/components/crons/daily_habits_and_challenge.js`)();
 require(`${__dirname}/components/crons/daily_schedule.js`)();
 
 // Testing functions
-// require(`${__dirname}/components/crons/daily_habits_and_challenge.js`)();
+require(`${__dirname}/components/crons/top_live_update.js`)();
 
 // enable advanced botkit studio metrics
 // and capture the metrics API to use with the identity plugin!
