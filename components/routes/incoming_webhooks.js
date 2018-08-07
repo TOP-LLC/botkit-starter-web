@@ -4,6 +4,8 @@ const sendSMS = require("./../functions/sendSMS")
 const rp = require("request-promise")
 const moment = require("moment")
 const queryUser = require("./../graphcool/queries/get_user_info")
+const getCurrentTalk = require("./../graphcool/queries/get_current_event")
+const updateLiveTalk = require("./../graphcool/mutations/update_live_talk")
 const updateUserConvoPause = require("./../graphcool/queries/update_user_convo_pause")
 const updateTouchpointStatus = require("./../graphcool/mutations/update_touchpoint_status_touchpointtime")
 const updateTouchpointAppointment = require("./../graphcool/mutations/update_touchpoint_appointment_reminder")
@@ -51,6 +53,42 @@ module.exports = (webserver, controller) => {
       res.send("Dashbot Pause Ran")
     })
   })
+
+    // Trigger when TOP Talk Live ends
+    debug("Configured /updatelivetalk url")
+    webserver.post("/updatelivetalk", async (req, res) => {
+      debug("Running update Live talk to PostLive", req)
+  
+      const { secret } = req.headers
+  
+      console.log("Event is ", secret)
+  
+      if (secret === "thelittlefoots") {
+        try {
+          const liveTalk = await getCurrentTalk()
+          if (liveTalk) {
+            const updatedTalk = await updateLiveTalk(liveTalk.id)
+            console.log("Updated Live Talk is ", updatedTalk)
+            res.status(200)
+            res.end("Live Talk updated ", updatedTalk)
+          } else {
+            console.log("No Live talk")
+            res.status(200)
+            res.end("No event found, ignoring or error")
+          }
+        } catch (err) {
+          console.log("Got an error in Live Talk ", err)
+          return {data: err}
+        }
+      } else {
+        res.status(200)
+        res.end("No event found, ignoring or error")
+      }
+  
+      res.status(200)
+  
+      res.end(`TOP Talk Live updated to PostLive ${req.headers}`)
+    })
 
   // Trigger when client completes a Google Form
   debug("Configured /submitform url")
