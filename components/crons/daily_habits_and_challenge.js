@@ -19,10 +19,10 @@ const authToken = process.env.TWILIO_AUTH_TOKEN
 
 const client = new twilio(accountSid, authToken);
 
-module.exports = function() {
+module.exports = async function() {
 
 // Run every weekday morning at 10:30 am EST
-return schedule.scheduleJob('daily report', '30 15 * * 1-5', 'Atlantic/Reykjavik', function() {
+return schedule.scheduleJob('daily report', '30 15 * * 1-5', 'Atlantic/Reykjavik', async function() {
 
   /*
     1. Every weekday morning at 10:30 am
@@ -33,8 +33,6 @@ return schedule.scheduleJob('daily report', '30 15 * * 1-5', 'Atlantic/Reykjavik
     6. Send to Twilio
     7. Repeat for each user
   */
-
-  const runEverything = async () => {
 
     const sendAllReminders = async (allUsers, currentChallenge, allReminders, activeHabit) => {
 
@@ -77,9 +75,6 @@ return schedule.scheduleJob('daily report', '30 15 * * 1-5', 'Atlantic/Reykjavik
       console.log("Error with daily habits and challenge messaging", err)
       return err
     }
-
-  }
-  return runEverything().then(result => console.log(result))
 
 });
 

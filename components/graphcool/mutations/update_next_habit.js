@@ -2,7 +2,7 @@ const lokkaClient = require('./../../lokka_graphcool.js');
 const debug = require('debug')('botkit:update_user_phone_number');
 
 module.exports = (habitId) => {
-  console.log('Change random Habit to active true',);
+  console.log('Change next Habit to active true',);
 
   const mutationQuery = `($habitId: ID!) {
     updateHabit(
@@ -22,11 +22,11 @@ module.exports = (habitId) => {
   return lokkaClient
     .mutate(mutationQuery, vars)
     .then((result) => {
-      debug('Updated random habit to active true ', result);
+      debug('Updated next habit to active true ', result);
       return { data: result };
     })
     .catch((error) => {
-      debug('Error in updating random habit to true', error);
+      debug('Error in updating next habit to true', error);
       return { data: error };
     });
 };

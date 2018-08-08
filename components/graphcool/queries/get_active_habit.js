@@ -10,6 +10,7 @@ module.exports = () => {
                 id
                 active
                 message
+                order
             }
         }
     `)
