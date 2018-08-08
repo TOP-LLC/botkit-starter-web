@@ -13,7 +13,7 @@ const updatePreLiveTalk = require('./../graphcool/mutations/update_prelive_talk'
 module.exports = async function() {
 
 // Run every weekday morning at 10 am EST
-// return schedule.scheduleJob('daily schedule', '0 6 * * *', 'Atlantic/Reykjavik', function() {
+return schedule.scheduleJob('daily schedule', '0 6 * * *', 'Atlantic/Reykjavik', async function() {
 
   /*
     1. Get PostLive Talk and set current to false
@@ -56,6 +56,6 @@ module.exports = async function() {
       return err
     }
 
-// });
+});
 
 }
