@@ -1,3 +1,5 @@
+const schedule = require('node-schedule-tz');
+
 const getPostLiveTalk = require('./../graphcool/queries/get_postlive_talk')
 const getNextTalk = require('./../graphcool/queries/get_next_prelive_talk')   
 const getAllHabits = require('./../graphcool/queries/get_all_habits')

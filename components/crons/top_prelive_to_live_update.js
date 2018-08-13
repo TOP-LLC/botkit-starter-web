@@ -1,3 +1,5 @@
+const schedule = require('node-schedule-tz');
+
 const getPreLiveTalk = require('./../graphcool/queries/get_current_event')
 const updatePreLiveTalk = require('./../graphcool/mutations/update_prelive_to_live_talk')
 
