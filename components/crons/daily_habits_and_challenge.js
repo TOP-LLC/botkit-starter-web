@@ -55,7 +55,7 @@ return schedule.scheduleJob('daily report', '30 15 * * 1-5', 'Atlantic/Reykjavik
         client.messages.create({
           body: `${greeting}! ${challengeMessage ? 'You already submitted your challenge. Nice work!' : challengeSet} ${dailyHabitMessage}`,
           to: `+19517647045`,
-          from: '+17874884263 ' 
+          from: '+17874884263' 
         })
         .then((message) => console.log(message.sid));
 
