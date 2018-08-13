@@ -6,7 +6,7 @@ const sendReminders = require('./../functions/sendTwilio')
 module.exports = async function() {
 
 // Run every weekday morning at 10 am EST
-return schedule.scheduleJob('daily schedule', '20 16 * * 1-5', 'Atlantic/Reykjavik', function() {
+return schedule.scheduleJob('daily schedule', '20 16 * * 1-5', 'Atlantic/Reykjavik', async function() {
 
     try {
       const preLiveTalk = await getPreLiveTalk()
