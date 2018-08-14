@@ -42,6 +42,8 @@ return schedule.scheduleJob('daily schedule', '26 15 * * 1-5', 'Atlantic/Reykjav
 
       let message = {}
       let currentEventMessage = ''
+      let prevEventTrainer = prevEvent.trainer ? prevEvent.trainer.firstName : "your TOP trainer"
+      let currentEventTrainer = currentEvent.trainer ? currentEvent.trainer.firstName : "your TOP trainer"
 
       switch (currentEvent.type) {
         case "Series":
@@ -57,8 +59,8 @@ return schedule.scheduleJob('daily schedule', '26 15 * * 1-5', 'Atlantic/Reykjav
         currentEventMessage = 'training on'
         }
 
-      message.prevEvent = `${moment(prevEvent.date).fromNow()}, ${prevEvent.trainer.firstName} hosted ${prevEvent.type === 'Office Hours' ? 'an' : 'a'} ${prevEvent.type} on ${prevEvent.title}.`
-      message.currentEvent = `${moment(currentEvent.date).calendar()} EST, ${currentEvent.trainer.firstName} is ${currentEventMessage} ${currentEvent.type === 'Series' ? currentEvent.title + "." : currentEvent.type === 'Booster' ? currentEvent.title + "." : "." } ${cta}`
+      message.prevEvent = `${moment(prevEvent.date).fromNow()}, ${prevEventTrainer} hosted ${prevEvent.type === 'Office Hours' ? 'an' : 'a'} ${prevEvent.type} on ${prevEvent.title}.`
+      message.currentEvent = `${moment(currentEvent.date).calendar()} EST, ${currentEventTrainer} is ${currentEventMessage} ${currentEvent.type === 'Series' ? currentEvent.title + "." : currentEvent.type === 'Booster' ? currentEvent.title + "." : "." } ${cta}`
 
       allUsers.map(u => {
         const { phoneSMS, firstName, attendedTalks } = u 
