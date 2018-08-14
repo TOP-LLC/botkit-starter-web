@@ -1,5 +1,6 @@
 const schedule = require('node-schedule-tz');
 const twilio = require('twilio');
+const sgMail = require('@sendgrid/mail');
 const _ = require('lodash');
 const moment = require('moment');
 
@@ -22,7 +23,7 @@ const client = new twilio(accountSid, authToken);
 module.exports = async function() {
 
 // Run every weekday morning at 10:30 am EST
-return schedule.scheduleJob('daily report', '30 15 * * 1-5', 'Atlantic/Reykjavik', async function() {
+// return schedule.scheduleJob('daily report', '30 15 * * 1-5', 'Atlantic/Reykjavik', async function() {
 
   console.log(`Running daily habits and challenge cron job at `, new Date())
 
@@ -48,7 +49,7 @@ return schedule.scheduleJob('daily report', '30 15 * * 1-5', 'Atlantic/Reykjavik
         console.log("Current reminder is ", currentReminder)
 
       return allUsers.map(u => {
-        const { phoneSMS, seriesChallengeSubmissions } = u
+        const { phoneSMS, seriesChallengeSubmissions, email } = u
 
         let challengeMessage = _.includes(seriesChallengeSubmissions, o => o.id === currentChallenge.id)
         let challengeSet = `Remember to keep working on your challenge: ${currentChallenge.description}, for the current Talk series on ${currentChallenge.talk.title} due sometime. And here's today's challenge reminder: ${currentReminder.message}`
@@ -61,6 +62,15 @@ return schedule.scheduleJob('daily report', '30 15 * * 1-5', 'Atlantic/Reykjavik
         })
         .then((message) => console.log(message.sid));
 
+        sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+        const msg = {
+          to: email,
+          from: 'support@topmortgage.co',
+          subject: 'TOP mortgage training Daily Schedule',
+          text: `${greeting}! ${challengeMessage ? 'You already submitted your challenge. Nice work!' : challengeSet} ${dailyHabitMessage}`,
+          html: `<p>${greeting}! </p> <p>${challengeMessage ? 'You already submitted your challenge. Nice work!' : challengeSet} ${dailyHabitMessage}</p>`,
+        };
+        sgMail.send(msg).then(message => console.log(message));
         });
     }
 
@@ -79,6 +89,6 @@ return schedule.scheduleJob('daily report', '30 15 * * 1-5', 'Atlantic/Reykjavik
       return err
     }
 
-});
+// });
 
 }

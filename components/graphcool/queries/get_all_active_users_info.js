@@ -10,6 +10,7 @@ module.exports = () => {
           firstName
           lastName
           phoneSMS
+          email
           attendedTalks {
             id
           }
