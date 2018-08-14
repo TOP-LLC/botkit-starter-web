@@ -17,6 +17,8 @@ module.exports = async function() {
 // Run every weekday morning at 10 am EST
 return schedule.scheduleJob('daily schedule', '0 6 * * *', 'Atlantic/Reykjavik', async function() {
 
+  console.log(`Running TOP Live Update cron job at `, new Date())
+
   /*
     1. Get PostLive Talk and set current to false
     2. Get next PreLive Talk and set current to true

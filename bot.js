@@ -47,16 +47,17 @@ require(`${__dirname}/components/plugin_identity.js`)(controller);
 require(__dirname + "/components/plugin_dashbot.js")(controller)
 
 // Load Cron Jobs
-require(`${__dirname}/components/crons/touchpoint_appointment_notification.js`)(controller);
-require(`${__dirname}/components/crons/weighin_weekly_notification.js`)(controller);
-require(`${__dirname}/components/crons/sprint_not_complete_reminder.js`)(controller);
+// require(`${__dirname}/components/crons/touchpoint_appointment_notification.js`)(controller);
+// require(`${__dirname}/components/crons/weighin_weekly_notification.js`)(controller);
+// require(`${__dirname}/components/crons/sprint_not_complete_reminder.js`)(controller);
 require(`${__dirname}/components/crons/daily_habits_and_challenge.js`)();
 require(`${__dirname}/components/crons/daily_schedule.js`)();
 require(`${__dirname}/components/crons/top_live_update.js`)();
 require(`${__dirname}/components/crons/top_prelive_to_live_update.js`)();
+require(`${__dirname}/components/crons/top_live_to_past_update.js`)();
 
 // Testing functions
-// require(`${__dirname}/components/crons/top_live_update.js`)();
+// require(`${__dirname}/components/crons/top_live_to_past_update.js`)();
 
 // enable advanced botkit studio metrics
 // and capture the metrics API to use with the identity plugin!

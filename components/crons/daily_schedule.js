@@ -25,6 +25,8 @@ module.exports = function() {
 // Run every weekday morning at 10 am EST
 return schedule.scheduleJob('daily schedule', '26 15 * * 1-5', 'Atlantic/Reykjavik', function() {
 
+  console.log(`Running daily schedule cron job at `, new Date())
+
   /*
     1. Every weekday morning at 10 am EST
     2. Get all active users 
@@ -79,6 +81,7 @@ return schedule.scheduleJob('daily schedule', '26 15 * * 1-5', 'Atlantic/Reykjav
       const currentEvent = await getCurrentEvent()
       console.log("Current event is, ", currentEvent)
       const allReports = await sendAllReminders(allUsers, prevEvent, currentEvent)
+      console.log("Finished with all schedules ", allReports)
       return allReports
     } catch (err) {
       console.log("Error with daily schedule reminder ", err)

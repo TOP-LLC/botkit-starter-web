@@ -3,6 +3,8 @@ import trainingEventStart from "./../functions/trainingEventStart"
 const sendSMS = require("./../functions/sendSMS")
 const rp = require("request-promise")
 const moment = require("moment")
+
+const updateLiveToPast = require("./../crons/top_live_to_past_update")
 const queryUser = require("./../graphcool/queries/get_user_info")
 const getCurrentTalk = require("./../graphcool/queries/get_current_event")
 const updateLiveTalk = require("./../graphcool/mutations/update_live_talk")
@@ -15,6 +17,17 @@ const randomGreeting = require("./../functions/randomGreeting")
 const debug = require("debug")("botkit:incoming_webhooks")
 
 module.exports = (webserver, controller) => {
+  debug("Configured zapier Live to Past url")
+  webserver.post("/livetopast", (req, res) => {
+    console.log("Got the following data ", req)
+    console.log("Complete is ", req.complete)
+    if (req.complete) {
+      updateLiveToPast()
+    }
+    res.status(200)
+    res.send("Got live to past ")
+  })
+
   debug("Configured /botkit/receive url")
   webserver.post("/botkit/receive", (req, res) => {
     // respond to Slack that the webhook has been received.

@@ -24,6 +24,8 @@ module.exports = async function() {
 // Run every weekday morning at 10:30 am EST
 return schedule.scheduleJob('daily report', '30 15 * * 1-5', 'Atlantic/Reykjavik', async function() {
 
+  console.log(`Running daily habits and challenge cron job at `, new Date())
+
   /*
     1. Every weekday morning at 10:30 am
     2. Get all active users 
@@ -69,6 +71,7 @@ return schedule.scheduleJob('daily report', '30 15 * * 1-5', 'Atlantic/Reykjavik
       const allReminders = await getAllReminders()
       const activeHabit = await getActiveHabit()
       const allReports = await sendAllReminders(allUsers, currentChallenge, allReminders, activeHabit)
+      console.log("Completed cron job all ", allReports)
       return allReports
   
     } catch (err) {
