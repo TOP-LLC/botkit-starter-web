@@ -15,7 +15,7 @@ const updatePreLiveTalk = require('./../graphcool/mutations/update_prelive_talk'
 module.exports = async function() {
 
 // Run every weekday morning at 10 am EST
-return schedule.scheduleJob('daily schedule', '0 6 * * *', 'Atlantic/Reykjavik', async function() {
+return schedule.scheduleJob('daily schedule', '0 6 * * 4,6', 'Atlantic/Reykjavik', async function() {
 
   console.log(`Running TOP Live Update cron job at `, new Date())
 

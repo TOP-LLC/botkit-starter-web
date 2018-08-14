@@ -8,7 +8,7 @@ const sendReminders = require('./../functions/sendTwilio')
 module.exports = async function() {
 
 // Run every weekday morning at 10 am EST
-return schedule.scheduleJob('daily schedule', '20 16 * * 1-5', 'Atlantic/Reykjavik', async function() {
+return schedule.scheduleJob('daily schedule', '20 16 * * 3,5', 'Atlantic/Reykjavik', async function() {
 
   console.log(`Running TOP PreLive to Live cron job at `, new Date())
 
