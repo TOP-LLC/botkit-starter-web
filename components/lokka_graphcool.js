@@ -5,9 +5,9 @@ const debug = require('debug')('botkit:lokka');
 
 debug('Preparing lokka client with env: ', process.env.NODE_ENV);
 
-const GQL_AUTH_TOKEN = process.env.GQL_AUTH_TOKEN_DEV;
+const GQL_AUTH_TOKEN = process.env.GQL_AUTH_TOKEN;
 
-const GQL_SIMPLE_API = process.env.GQL_SIMPLE_API_DEV;
+const GQL_SIMPLE_API = process.env.GQL_SIMPLE_API;
 
 const headers = {
   Authorization: `Bearer ${GQL_AUTH_TOKEN}`,

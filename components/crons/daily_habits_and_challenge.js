@@ -23,7 +23,7 @@ const client = new twilio(accountSid, authToken);
 module.exports = async function() {
 
 // Run every weekday morning at 10:30 am EST
-// return schedule.scheduleJob('daily report', '30 15 * * 1-5', 'Atlantic/Reykjavik', async function() {
+return schedule.scheduleJob('daily report', '30 15 * * 1-5', 'Atlantic/Reykjavik', async function() {
 
   console.log(`Running daily habits and challenge cron job at `, new Date())
 
@@ -68,7 +68,7 @@ module.exports = async function() {
           from: 'support@topmortgage.co',
           subject: 'TOP mortgage training Daily Schedule',
           text: `${greeting}! ${challengeMessage ? 'You already submitted your challenge. Nice work!' : challengeSet} ${dailyHabitMessage}`,
-          html: `<p>${greeting}! </p> <p>${challengeMessage ? 'You already submitted your challenge. Nice work!' : challengeSet} ${dailyHabitMessage}</p>`,
+          html: `<p>${greeting}!</p> <p>${challengeMessage ? 'You already submitted your challenge. Nice work!' : `<p>Remember to keep working on your challenge: ${currentChallenge.description}, for the current Talk series on ${currentChallenge.talk.title} due sometime.</p> <p>Here's today's challenge tip: ${currentReminder.message}</p>`} <p>And here's today's habit to focus on: ${activeHabit.message}</p>`,
         };
         sgMail.send(msg).then(message => console.log(message));
         });
@@ -89,6 +89,6 @@ module.exports = async function() {
       return err
     }
 
-// });
+});
 
 }
