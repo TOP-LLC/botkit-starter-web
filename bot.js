@@ -54,7 +54,6 @@ require(`${__dirname}/components/crons/daily_habits_and_challenge.js`)();
 require(`${__dirname}/components/crons/daily_schedule.js`)();
 require(`${__dirname}/components/crons/top_live_update.js`)();
 require(`${__dirname}/components/crons/top_prelive_to_live_update.js`)();
-// require(`${__dirname}/components/crons/top_live_to_past_update.js`)();
 
 // Testing functions
 // require(`${__dirname}/components/crons/daily_habits_and_challenge.js`)();
