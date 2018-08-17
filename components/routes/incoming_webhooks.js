@@ -4,7 +4,7 @@ const sendSMS = require("./../functions/sendSMS")
 const rp = require("request-promise")
 const moment = require("moment")
 
-const updateLiveToPast = require("./../crons/top_live_to_past_update")
+const updateLiveToPast = require("./../crons/top_live_to_postlive_update")
 const queryUser = require("./../graphcool/queries/get_user_info")
 const getCurrentTalk = require("./../graphcool/queries/get_current_event")
 const updateLiveTalk = require("./../graphcool/mutations/update_live_talk")
