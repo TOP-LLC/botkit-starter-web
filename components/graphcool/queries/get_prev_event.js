@@ -6,30 +6,35 @@ module.exports = () => {
   return lokkaClient
     .query(`
         query {
-        allTalks (filter: {status: Past} orderBy: date_DESC first: 1) {
-            id
-            status
-            title
-            type
-            date 
-                seriesChallenge {
+            allTalks(filter: {status: Past}, orderBy: date_DESC, first: 1) {
+              id
+              status
+              title
+              type
+              date
+              seriesChallenge {
                 id
                 description
                 dueDate
-                current 
-            }
-            trainer {
+                current
+              }
+              series {
+                id
+                title
+                description
+              }
+              trainer {
                 id
                 firstName
                 lastName
-            }
-            attendees {
+              }
+              attendees {
                 id
                 firstName
                 lastName
+              }
             }
-            }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
-        }
+          }
     `)
     .then((result) => result.allTalks[0]);
 }; 

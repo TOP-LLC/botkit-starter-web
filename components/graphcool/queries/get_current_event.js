@@ -5,25 +5,36 @@ module.exports = () => {
 
   return lokkaClient
     .query(`
-        query {
-            allTalks (filter: {current: true}) {
+    query {
+        allTalks(filter: {current: true}) {
+          id
+          status
+          title
+          type
+          date
+          seriesChallenge {
             id
-            status
-            title 
-            date 
-            type
-            trainer {
-                id
-                firstName
-                lastName
-            }
-            attendees {
-                id
-                firstName
-                lastName
-            }
-            }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+            description
+            dueDate
+            current
+          }
+          series {
+            id
+            title
+            description
+          }
+          trainer {
+            id
+            firstName
+            lastName
+          }
+          attendees {
+            id
+            firstName
+            lastName
+          }
         }
+      }
     `)
     .then((result) => result.allTalks[0]);
 }; 

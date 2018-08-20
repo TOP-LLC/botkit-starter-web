@@ -23,7 +23,7 @@ const client = new twilio(accountSid, authToken);
 module.exports = function() {
 
 // Run every weekday morning at 10 am EST
-return schedule.scheduleJob('daily schedule', '26 15 * * 1-5', 'Atlantic/Reykjavik', function() {
+return schedule.scheduleJob('daily schedule', '00 11 * * 1-5', 'Atlantic/Reykjavik', function() {
 
   console.log(`Running daily schedule cron job at `, new Date())
 
@@ -42,25 +42,40 @@ return schedule.scheduleJob('daily schedule', '26 15 * * 1-5', 'Atlantic/Reykjav
 
       let message = {}
       let currentEventMessage = ''
+      let prevEventMessage = ''
       let prevEventTrainer = prevEvent.trainer ? prevEvent.trainer.firstName : "your TOP trainer"
       let currentEventTrainer = currentEvent.trainer ? currentEvent.trainer.firstName : "your TOP trainer"
 
       switch (currentEvent.type) {
         case "Series":
-        currentEventMessage = 'continuing his TOP Talk series on'
+        currentEventMessage = 'continuing his TOP Live Talk series'
         break;
-        case "Booster":
-        currentEventMessage = 'hosting a Booster on'
+        case "Other":
+        currentEventMessage = 'hosting a Business Booster'
         break;
         case "GeneralQA":
-        currentEventMessage = 'available for Office Hours'
+        currentEventMessage = 'available for Office Hours.'
         break;
         default:
         currentEventMessage = 'training on'
         }
 
-      message.prevEvent = `${moment(prevEvent.date).fromNow()}, ${prevEventTrainer} hosted ${prevEvent.type === 'Office Hours' ? 'an' : 'a'} ${prevEvent.type} on ${prevEvent.title}.`
-      message.currentEvent = `${moment(currentEvent.date).calendar()} EST, ${currentEventTrainer} is ${currentEventMessage} ${currentEvent.type === 'Series' ? currentEvent.title + "." : currentEvent.type === 'Booster' ? currentEvent.title + "." : "." } ${cta}`
+      switch (prevEvent.type) {
+        case "Series":
+        prevEventMessage = 'continued his TOP Live Talk series '
+        break;
+        case "Other":
+        prevEventMessage = 'hosted a Business Booster '
+        break;
+        case "GeneralQA":
+        prevEventMessage = 'held an Office Hours live session'
+        break;
+        default:
+        prevEventMessage = 'trained on'
+        }
+
+      message.prevEvent = `${moment(prevEvent.date).fromNow()}, ${prevEventTrainer} ${prevEventMessage}${prevEvent.type === 'GeneralQA' ? "." : ""}${prevEvent.type === 'Series' ? `"${prevEvent.series.title}: ${prevEvent.title}".` : ""}${prevEvent.type === 'Other' ? `"${prevEvent.title}".` : ""} Check the recording if you missed it!`
+      message.currentEvent = `${moment(currentEvent.date).calendar()} EST, ${currentEventTrainer} is ${currentEventMessage} ${currentEvent.type === 'GeneralQA' ? "." : ""}${currentEvent.type === 'Series' ? `"${currentEvent.series.title}: ${currentEvent.title}".` : ""}${currentEvent.type === 'Other' ? `"${currentEvent.title}".` : ""} ${cta}`
 
       allUsers.map(u => {
         const { phoneSMS, firstName, attendedTalks } = u 

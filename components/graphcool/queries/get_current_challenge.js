@@ -9,6 +9,7 @@ module.exports = () => {
             allSeriesChallenges (filter: {current: true}) {
                 id
                 description
+                dueDate
                 talk {
                     id
                     title
