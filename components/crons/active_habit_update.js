@@ -9,7 +9,7 @@ const updateNextHabit = require('../graphcool/mutations/update_next_habit')
 module.exports = async function() {
 
 // Run every weekday morning at 10 am EST
-// return schedule.scheduleJob('daily schedule', '0 6 * * 1-5', 'Atlantic/Reykjavik', async function() {
+return schedule.scheduleJob('daily schedule', '0 6 * * 1-5', 'Atlantic/Reykjavik', async function() {
 
   console.log(`Running Habit Update cron job at `, new Date())
 
@@ -37,6 +37,6 @@ module.exports = async function() {
       return err
     }
 
-// });
+});
 
 }
