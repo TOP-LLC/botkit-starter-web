@@ -23,7 +23,7 @@ const client = new twilio(accountSid, authToken);
 module.exports = function() {
 
 // Run every weekday morning at 10 am EST
-return schedule.scheduleJob('daily schedule', '00 12 * * 1-5', 'Atlantic/Reykjavik', function() {
+return schedule.scheduleJob('daily schedule', '00 12 * * 1,3,4,5', 'Atlantic/Reykjavik', function() {
 
   console.log(`Running daily schedule cron job at `, new Date())
 
