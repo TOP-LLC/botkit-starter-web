@@ -13,7 +13,7 @@ const updatePreLiveTalk = require('./../graphcool/mutations/update_prelive_talk'
 module.exports = async function() {
 
 // Run every weekday morning at 10 am EST
-return schedule.scheduleJob('daily schedule', '0 6 * * 4,6', 'Atlantic/Reykjavik', async function() {
+// return schedule.scheduleJob('daily schedule', '0 6 * * 4,6', 'Atlantic/Reykjavik', async function() {
 
   console.log(`Running TOP Live Update cron job at `, new Date())
 
@@ -34,25 +34,14 @@ return schedule.scheduleJob('daily schedule', '0 6 * * 4,6', 'Atlantic/Reykjavik
         console.log("Pre Live Talk ", preLiveTalk)
         const updatedPreLiveTalk = await updatePreLiveTalk(preLiveTalk[0].id)
         console.log("Updated PreLive Talk ", updatedPreLiveTalk)
+        return updatedPreLiveTalk
       }
-      const allHabits = await getAllHabits()
-      console.log("All Habits ", allHabits)
-      const activeHabit = await getActiveHabit()
-      console.log("Active habit is ", activeHabit)
-      const updatedActiveHabit = await updateActiveHabit(activeHabit.id)
-      if (allHabits) {
-        let index = activeHabit.order < allHabits.length - 1 ? activeHabit.order : 0
-        console.log("Index is ", index)
-        let nextHabit = allHabits[index].id
-        const updatedNextHabit = await updateNextHabit(nextHabit)
-        console.log("Updated Next Habit ", updatedNextHabit)
-      }
-      return updatedActiveHabit
+      return console.log("No Talk to Update", new Date())
     } catch (err) {
-      console.log("Error with nightly cron job ", err)
+      console.log("Error with new PreLive Talk ", err)
       return err
     }
 
-});
+// });
 
 }
