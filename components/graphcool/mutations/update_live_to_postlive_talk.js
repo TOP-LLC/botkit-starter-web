@@ -12,6 +12,7 @@ module.exports = (talkId) => {
       id
       status
       date
+      type
     }
   }
   `;

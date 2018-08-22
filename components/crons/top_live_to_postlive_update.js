@@ -17,11 +17,13 @@ module.exports = async function() {
       console.log("Updated Live Talk to PostLive", updatedLiveTalk)
       if (updatedLiveTalk.type === 'Series') {
         // Get most recent Past Talk that is a Series
+        console.log("Talk is a series, update challenges")
         const pastTalkChallenge = getCurrentChallenge()
         console.log("Past Talk challenge is ", pastTalkChallenge)
         const updatedPastChallenge = await updatePostLiveChallenge(pastTalkChallenge.id)
         const updatedPostLiveChallenge = await updatePreLiveChallenge(updatedLiveTalk.seriesChallenge.id)
         console.log("Updated challenges ", [updatedPastChallenge, updatedPostLiveChallenge])
+        return [updatedPastChallenge, updatedPostLiveChallenge]
       }
       return updatedLiveTalk
     } catch (err) {
