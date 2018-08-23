@@ -1,9 +1,10 @@
 const schedule = require('node-schedule-tz');
 const twilio = require('twilio');
-const moment = require('moment');
+// const moment = require('moment');
+const moment = require('moment-timezone')
 const _ = require('lodash');
 
-const getAllActiveUsers = require('./../graphcool/queries/get_all_active_users_info')
+const getAllActiveUsers = require('./../graphcool/queries/get_all_enrolled_users')
 const getCurrentEvent = require('./../graphcool/queries/get_current_event')   
 const getPrevEvent = require('./../graphcool/queries/get_prev_event')   
 
@@ -74,14 +75,14 @@ return schedule.scheduleJob('daily schedule', '00 12 * * 1,3,4,5', 'Atlantic/Rey
         prevEventMessage = 'trained on'
         }
 
-      message.prevEvent = `${moment(prevEvent.date).fromNow()}, ${prevEventTrainer} ${prevEventMessage}${prevEvent.type === 'GeneralQA' ? "." : ""}${prevEvent.type === 'Series' ? `"${prevEvent.series.title}: ${prevEvent.title}".` : ""}${prevEvent.type === 'Other' ? `"${prevEvent.title}".` : ""} Check the recording if you missed it!`
-      message.currentEvent = `${moment(currentEvent.date).calendar()} EST, ${currentEventTrainer} is ${currentEventMessage} ${currentEvent.type === 'GeneralQA' ? "." : ""}${currentEvent.type === 'Series' ? `"${currentEvent.series.title}: ${currentEvent.title}".` : ""}${currentEvent.type === 'Other' ? `"${currentEvent.title}".` : ""} ${cta}`
+      message.prevEvent = `${moment.tz(prevEvent.date, "America/Los_Angeles").fromNow()} ${prevEventTrainer} ${prevEventMessage}${prevEvent.type === 'GeneralQA' ? "." : ""}${prevEvent.type === 'Series' ? `"${prevEvent.series.title}: ${prevEvent.title}".` : ""}${prevEvent.type === 'Other' ? `"${prevEvent.title}".` : ""} Check the recording if you missed it!`
+      message.currentEvent = `${moment.tz(currentEvent.date, "America/Los_Angeles").calendar()} PST, ${currentEventTrainer} is ${currentEventMessage} ${currentEvent.type === 'GeneralQA' ? "." : ""}${currentEvent.type === 'Series' ? `"${currentEvent.series.title}: ${currentEvent.title}".` : ""}${currentEvent.type === 'Other' ? `"${currentEvent.title}".` : ""} ${cta}`
 
       allUsers.map(u => {
         const { phoneSMS, firstName, attendedTalks } = u 
 
         client.messages.create({
-          body: `${greeting}, ${_.includes(attendedTalks, o => o.id === currentEvent.id) ? firstName + "! " : firstName + "! " + message.prevEvent + " And"} ${message.currentEvent}`,
+          body: `${greeting}, ${_.includes(attendedTalks, o => o.id === currentEvent.id) ? firstName + "! " : firstName + ", " + message.prevEvent + " And"} ${message.currentEvent}`,
           to: `+19517647045`,
           from: '+17874884263' 
         })

@@ -1,7 +1,7 @@
 const schedule = require('node-schedule-tz');
 const twilio = require('twilio');
 
-const getAllActiveUsers = require('../graphcool/queries/get_all_active_users_info');
+const getAllActiveUsers = require('../graphcool/queries/get_all_enrolled_users');
 const getActiveHabit = require('../graphcool/queries/get_active_habit');
 
 const greetings = ["What's up", 'Hey', 'Boom', 'Buenos dias', 'Yo', 'Listen up', 'Salutations', 'Hola', 'Aloha'];

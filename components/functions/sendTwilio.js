@@ -1,5 +1,5 @@
 const twilio = require('twilio');
-const moment = require('moment');
+const moment = require('moment-timezone');
 
 const getAllActiveUsers = require('./../graphcool/queries/get_all_active_users_info')
 const getCurrentEvent = require('./../graphcool/queries/get_current_event')    
@@ -19,40 +19,40 @@ const client = new twilio(accountSid, authToken);
 
 module.exports = async function() {
 
-    const sendAllReminders = async (allUsers, currentEvent) => {
+  const sendAllReminders = async (allUsers, currentEvent) => {
 
-        console.log("All users are ", allUsers)
+    let message = {}
+    let currentEventMessage = ''
+    let currentEventTrainer = currentEvent.trainer ? currentEvent.trainer.firstName : "your TOP trainer"
 
-      let message = {}
-      let currentEventMessage = ''
+    switch (currentEvent.type) {
+      case "Series":
+      currentEventMessage = 'continuing his TOP Live Talk series'
+      break;
+      case "Other":
+      currentEventMessage = 'hosting a Business Booster'
+      break;
+      case "GeneralQA":
+      currentEventMessage = 'available for Office Hours.'
+      break;
+      default:
+      currentEventMessage = 'training on'
+      }
 
-      switch (currentEvent.type) {
-        case "Series":
-        currentEventMessage = 'continuing his TOP Talk series on'
-        break;
-        case "Booster":
-        currentEventMessage = 'hosting a Booster on'
-        break;
-        case "GeneralQA":
-        currentEventMessage = 'available for Office Hours'
-        break;
-        default:
-        currentEventMessage = 'training on'
-        }
+    message.currentEvent = `In ${moment.tz(currentEvent.date, "America/Los_Angeles").fromNow()}, ${currentEventTrainer} is ${currentEventMessage} ${currentEvent.type === 'GeneralQA' ? "." : ""}${currentEvent.type === 'Series' ? `"${currentEvent.series.title}: ${currentEvent.title}".` : ""}${currentEvent.type === 'Other' ? `"${currentEvent.title}".` : ""} ${cta}`
 
-      message.currentEvent = `In ${moment(currentEvent.date).fromNow()}, ${currentEvent.trainer.firstName} is ${currentEventMessage} ${currentEvent.type === 'Series' ? currentEvent.title + "." : currentEvent.type === 'Booster' ? currentEvent.title + "." : "." } ${cta}`
+    allUsers.map(u => {
+      const { phoneSMS, firstName, attendedTalks } = u 
 
-      allUsers.map(u => {
-        const { phoneSMS, firstName } = u 
+      client.messages.create({
+        body: `${greeting}, ${firstName + "!"} ${message.currentEvent}`,
+        to: `+19517647045`,
+        from: '+17874884263' 
+      })
+      .then((message) => console.log(message.sid, `${greeting}, ${firstName}! ${message.currentEvent}`));
 
-        client.messages.create({
-          body: `${greeting}, ${firstName + "!"} ${message.currentEvent}`,
-          to: `+19517647045`,
-          from: '+17874884263' 
-        })
-        .then((message) => console.log(message.sid, `${greeting}, ${firstName + "!"} ${message.currentEvent}`));
-        });
-    }
+      });
+  }
 
     try {
       const allUsers = await getAllActiveUsers()

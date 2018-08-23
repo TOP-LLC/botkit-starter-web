@@ -18,7 +18,7 @@ return schedule.scheduleJob('daily schedule', '30 14 * * 1-5', 'Atlantic/Reykjav
       if (preLiveTalk.status === 'PreLive') {
         const updatedPreLiveTalk = await updatePreLiveTalk(preLiveTalk.id)
         console.log("Updated PreLive Talk ", updatedPreLiveTalk)
-        const allReminders = await sendReminders()
+        const allReminders = await sendReminders(preLiveTalk)
         console.log("Completed Prelive to Live with ", allReminders)
         return allReminders
       }
