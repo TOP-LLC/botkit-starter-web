@@ -58,7 +58,7 @@ require(`${__dirname}/components/crons/active_habit_update.js`)();
 require(`${__dirname}/components/crons/top_prelive_to_live_update.js`)();
 
 // Testing functions
-require(`${__dirname}/components/functions/sendTwilio.js`)();
+// require(`${__dirname}/components/functions/sendTwilio.js`)();
 
 // enable advanced botkit studio metrics
 // and capture the metrics API to use with the identity plugin!
