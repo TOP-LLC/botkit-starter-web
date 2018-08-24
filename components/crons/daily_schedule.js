@@ -55,7 +55,7 @@ return schedule.scheduleJob('daily schedule', '00 12 * * 1,3,4,5', 'Atlantic/Rey
         currentEventMessage = 'hosting a Business Booster'
         break;
         case "GeneralQA":
-        currentEventMessage = 'available for Office Hours.'
+        currentEventMessage = 'available for Office Hours'
         break;
         default:
         currentEventMessage = 'training on'
@@ -87,7 +87,7 @@ return schedule.scheduleJob('daily schedule', '00 12 * * 1,3,4,5', 'Atlantic/Rey
 
         client.messages.create({
           body: `${greeting}, ${_.includes(attendedTalks, o => o.id === currentEvent.id) ? firstName + "! " : firstName + ", " + message.prevEvent + " And"} ${message.currentEvent}`,
-          to: `+19517647045`,
+          to: `+1${phoneSMS}`,
           from: '+17874884263' 
         })
         .then((message) => console.log(message.sid, `${greeting}, ${firstName}! ${message.prevEvent} ${message.currentEvent}`));

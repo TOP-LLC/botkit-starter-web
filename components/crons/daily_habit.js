@@ -45,7 +45,7 @@ return schedule.scheduleJob('daily report', '00 13 * * 1-5', 'Atlantic/Reykjavik
 
         client.messages.create({
           body: `${greeting}! ${dailyHabitMessage}`,
-          to: `+19517647045`,
+          to: `+1${phoneSMS}`,
           from: '+17874884263' 
         })
         .then((message) => console.log(message.sid));

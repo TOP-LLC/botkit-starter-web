@@ -59,7 +59,7 @@ return schedule.scheduleJob('daily report', '30 12 * * 1,3,5', 'Atlantic/Reykjav
 
         client.messages.create({
           body: `${greeting}! ${challengeMessage ? 'You already submitted your challenge. Nice work!' : challengeSet}`,
-          to: `+19517647045`,
+          to: `+1${phoneSMS}`,
           from: '+17874884263' 
         })
         .then((message) => console.log(message.sid));
