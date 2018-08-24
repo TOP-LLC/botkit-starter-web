@@ -50,7 +50,7 @@ module.exports = async function() {
 
       client.messages.create({
         body: `${greeting} ${firstName + ","} ${message.currentEvent}`,
-        to: `+19517647045`,
+        to: `+1${phoneSMS}`,
         from: '+17874884263' 
       })
       .then((message) => console.log(message.sid, `${greeting}, ${firstName}! ${message.currentEvent}`));
