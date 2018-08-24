@@ -44,6 +44,10 @@ module.exports = async function() {
     allUsers.map(u => {
       const { phoneSMS, firstName, attendedTalks } = u 
 
+      if (!phoneSMS) {
+        return null
+      }
+
       client.messages.create({
         body: `${greeting}, ${firstName + "!"} ${message.currentEvent}`,
         to: `+19517647045`,

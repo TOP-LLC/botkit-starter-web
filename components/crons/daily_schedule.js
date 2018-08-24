@@ -81,6 +81,10 @@ return schedule.scheduleJob('daily schedule', '00 12 * * 1,3,4,5', 'Atlantic/Rey
       allUsers.map(u => {
         const { phoneSMS, firstName, attendedTalks } = u 
 
+        if (!phoneSMS) {
+          return null
+        }
+
         client.messages.create({
           body: `${greeting}, ${_.includes(attendedTalks, o => o.id === currentEvent.id) ? firstName + "! " : firstName + ", " + message.prevEvent + " And"} ${message.currentEvent}`,
           to: `+19517647045`,

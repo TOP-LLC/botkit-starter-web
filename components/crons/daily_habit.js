@@ -37,6 +37,10 @@ return schedule.scheduleJob('daily report', '00 13 * * 1-5', 'Atlantic/Reykjavik
       allUsers.map(u => {
         const { phoneSMS, seriesChallengeSubmissions, email } = u
 
+        if (!phoneSMS) {
+          return null
+        }
+
         let dailyHabitMessage = `Today's habit to work on: ${activeHabit.message}`
 
         client.messages.create({

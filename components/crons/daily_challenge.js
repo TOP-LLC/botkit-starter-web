@@ -50,6 +50,10 @@ return schedule.scheduleJob('daily report', '30 12 * * 1,3,5', 'Atlantic/Reykjav
       return allUsers.map(u => {
         const { phoneSMS, seriesChallengeSubmissions, email, firstName } = u
 
+        if (!phoneSMS) {
+          return null
+        }
+
         let challengeMessage = _.includes(seriesChallengeSubmissions, o => o.id === currentChallenge.id)
         let challengeSet = `Your challenge: "${currentChallenge.description}" is due ${moment.tz(currentChallenge.dueDate, "America/Los_Angeles").calendar()}. Today's challenge tip: ${currentReminder.message}`
 
@@ -60,15 +64,15 @@ return schedule.scheduleJob('daily report', '30 12 * * 1,3,5', 'Atlantic/Reykjav
         })
         .then((message) => console.log(message.sid));
 
-        // sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-        // const msg = {
-        //   to: email,
-        //   from: 'support@topmortgage.co',
-        //   subject: 'TOP mortgage training Daily Schedule',
-        //   text: `${greeting} ${firstName}! ${challengeMessage ? 'You already submitted your challenge. Nice work!' : challengeSet}`,
-        //   html: `<p>${greeting}, ${firstName}!</p> <p>${challengeMessage ? 'You already submitted your challenge. Nice work!</p>' : `Your challenge: "<em>${currentChallenge.description}</em>" is due ${moment.utc(currentChallenge.dueDate).fromNow()} <a href="mailto:support@topmortgage.org">Email us</a> to submit it.</p><p><strong>Today's challenge tip</strong>: ${currentReminder.message}</p>`}`,
-        // };
-        // sgMail.send(msg).then(message => console.log(message));
+        sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+        const msg = {
+          to: email,
+          from: 'support@topmortgage.co',
+          subject: 'TOP mortgage training Daily Schedule',
+          text: `${greeting} ${firstName}! ${challengeMessage ? 'You already submitted your challenge. Nice work!' : challengeSet}`,
+          html: `<p>${greeting}, ${firstName}!</p> <p>${challengeMessage ? 'You already submitted your challenge. Nice work!</p>' : `Your challenge: "<em>${currentChallenge.description}</em>" is due ${moment.utc(currentChallenge.dueDate).fromNow()} <a href="mailto:support@topmortgage.org">Email us</a> to submit it.</p><p><strong>Today's challenge tip</strong>: ${currentReminder.message}</p>`}`,
+        };
+        sgMail.send(msg).then(message => console.log(message));
         });
     }
 
