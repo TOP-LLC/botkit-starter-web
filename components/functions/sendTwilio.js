@@ -33,13 +33,13 @@ module.exports = async function() {
       currentEventMessage = 'hosting a Business Booster'
       break;
       case "GeneralQA":
-      currentEventMessage = 'available for Office Hours.'
+      currentEventMessage = 'available for Office Hours'
       break;
       default:
       currentEventMessage = 'training on'
       }
 
-    message.currentEvent = `In ${moment.tz(currentEvent.date, "America/Los_Angeles").fromNow()}, ${currentEventTrainer} is ${currentEventMessage} ${currentEvent.type === 'GeneralQA' ? "." : ""}${currentEvent.type === 'Series' ? `"${currentEvent.series.title}: ${currentEvent.title}".` : ""}${currentEvent.type === 'Other' ? `"${currentEvent.title}".` : ""} ${cta}`
+    message.currentEvent = `${moment.tz(currentEvent.date, "America/Los_Angeles").fromNow()}, ${currentEventTrainer} is ${currentEventMessage}${currentEvent.type === 'GeneralQA' ? "." : ""}${currentEvent.type === 'Series' ? `"${currentEvent.series.title}: ${currentEvent.title}".` : ""}${currentEvent.type === 'Other' ? `"${currentEvent.title}".` : ""} ${cta}`
 
     allUsers.map(u => {
       const { phoneSMS, firstName, attendedTalks } = u 
@@ -49,7 +49,7 @@ module.exports = async function() {
       }
 
       client.messages.create({
-        body: `${greeting}, ${firstName + "!"} ${message.currentEvent}`,
+        body: `${greeting} ${firstName + ","} ${message.currentEvent}`,
         to: `+19517647045`,
         from: '+17874884263' 
       })

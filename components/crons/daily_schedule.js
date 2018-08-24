@@ -3,6 +3,7 @@ const twilio = require('twilio');
 // const moment = require('moment');
 const moment = require('moment-timezone')
 const _ = require('lodash');
+const sgMail = require('@sendgrid/mail');
 
 const getAllActiveUsers = require('./../graphcool/queries/get_all_enrolled_users')
 const getCurrentEvent = require('./../graphcool/queries/get_current_event')   
@@ -92,7 +93,17 @@ return schedule.scheduleJob('daily schedule', '00 12 * * 1,3,4,5', 'Atlantic/Rey
         })
         .then((message) => console.log(message.sid, `${greeting}, ${firstName}! ${message.prevEvent} ${message.currentEvent}`));
 
-        });
+        sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+        const msg = {
+          to: email,
+          from: 'support@topmortgage.org',
+          subject: 'TOP mortgage training Daily Live Schedule',
+          text: `${greeting}, ${firstName + ", " + message.prevEvent + " And"} ${message.currentEvent}`,
+          html: `<p>${greeting}, ${_.includes(attendedTalks, o => o.id === currentEvent.id) ? firstName + "! " : firstName + ", " + message.prevEvent}</p> <p>And ${message.currentEvent}</p> <p><a href="https://www.topmortgage.co">Log in now to check it all out!<a></p>`,
+        };
+        sgMail.send(msg).then(message => console.log(message));
+
+      });
     }
 
     try {

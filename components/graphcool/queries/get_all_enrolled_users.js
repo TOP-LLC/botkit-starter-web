@@ -4,26 +4,26 @@ module.exports = () => {
 
   return lokkaClient
     .query(`
-    query {
-      allUsers(filter: { accountStatus_not: InActive phoneSMS_not: null }) {
-        id
-        firstName
-        lastName
-        phoneSMS
-        email
-        attendedTalks {
+      query {
+        allUsers(filter: { id: "cjelwqdx62gk10128w3c0gewe" }) {
           id
-        }
-        seriesChallengeSubmissions {
-          id
-          fileURL
-          seriesChallenge {
+          firstName
+          lastName
+          phoneSMS
+          email
+          attendedTalks {
             id
-            current
+          }
+          seriesChallengeSubmissions {
+            id
+            fileURL
+            seriesChallenge {
+              id
+              current
+            }
           }
         }
-      }
-    }    
+      }    
       `)
     // .query(`
     //   query {
