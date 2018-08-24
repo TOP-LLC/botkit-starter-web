@@ -1,7 +1,7 @@
 const twilio = require('twilio');
 const moment = require('moment-timezone');
 
-const getAllActiveUsers = require('./../graphcool/queries/get_all_active_users_info')
+const getAllActiveUsers = require('./../graphcool/queries/get_all_enrolled_users')
 const getCurrentEvent = require('./../graphcool/queries/get_current_event')    
 
 const greetings = ["What's up", 'Hey', 'Boom', 'Buenos dias', 'Yo', 'Listen up', 'Salutations', 'Hola', 'Aloha'];
