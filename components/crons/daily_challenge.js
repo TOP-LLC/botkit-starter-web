@@ -22,7 +22,7 @@ const client = new twilio(accountSid, authToken);
 module.exports = async function() {
 
 // Run every weekday morning at 8:30 am EST
-return schedule.scheduleJob('daily report', '30 12 * * 1,3,5', 'Atlantic/Reykjavik', async function() {
+return schedule.scheduleJob('daily report', '30 12 * * 1,3,4,5', 'Atlantic/Reykjavik', async function() {
 
   console.log(`Running daily habits and challenge cron job at `, new Date())
 
@@ -64,15 +64,15 @@ return schedule.scheduleJob('daily report', '30 12 * * 1,3,5', 'Atlantic/Reykjav
         })
         .then((message) => console.log(message.sid));
 
-        sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-        const msg = {
-          to: email,
-          from: 'support@topmortgage.co',
-          subject: 'TOP mortgage training Daily Schedule',
-          text: `${greeting} ${firstName}! ${challengeMessage ? 'You already submitted your challenge. Nice work!' : challengeSet}`,
-          html: `<p>${greeting}, ${firstName}!</p> <p>${challengeMessage ? 'You already submitted your challenge. Nice work!</p>' : `Your challenge: "<em>${currentChallenge.description}</em>" is due ${moment.utc(currentChallenge.dueDate).fromNow()} <a href="mailto:support@topmortgage.org">Email us</a> to submit it.</p><p><strong>Today's challenge tip</strong>: ${currentReminder.message}</p>`}`,
-        };
-        sgMail.send(msg).then(message => console.log(message));
+        // sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+        // const msg = {
+        //   to: email,
+        //   from: 'support@topmortgage.co',
+        //   subject: 'TOP mortgage training Daily Schedule',
+        //   text: `${greeting} ${firstName}! ${challengeMessage ? 'You already submitted your challenge. Nice work!' : challengeSet}`,
+        //   html: `<p>${greeting}, ${firstName}!</p> <p>${challengeMessage ? 'You already submitted your challenge. Nice work!</p>' : `Your challenge: "<em>${currentChallenge.description}</em>" is due ${moment.utc(currentChallenge.dueDate).fromNow()} <a href="mailto:support@topmortgage.org">Email us</a> to submit it.</p><p><strong>Today's challenge tip</strong>: ${currentReminder.message}</p>`}`,
+        // };
+        // sgMail.send(msg).then(message => console.log(message));
         });
     }
 

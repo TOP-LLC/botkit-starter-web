@@ -5,7 +5,7 @@ module.exports = () => {
   return lokkaClient
     .query(`
       query {
-        allUsers(filter: { id: "cjelwqdx62gk10128w3c0gewe" }) {
+        allUsers(filter: { accountStatus_not: InActive phoneSMS_not: null }) {
           id
           firstName
           lastName
@@ -25,15 +25,5 @@ module.exports = () => {
         }
       }    
       `)
-    // .query(`
-    //   query {
-    //     allUsers(filter: {status: Active, type: Client, loginNotice: None phoneSMS_not: null}) {
-    //       id
-    //       firstName
-    //       lastName
-    //       phoneSMS
-    //     }
-    //   }      
-    // `)
     .then((result) => result.allUsers);
 };

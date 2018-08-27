@@ -23,7 +23,7 @@ module.exports = () => {
           }
         }
       }
-    }    
+    }       
       `)
     .then((result) => result.allUsers);
 };
