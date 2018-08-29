@@ -82,7 +82,7 @@ return schedule.scheduleJob('daily schedule', '30 14 * * 1,3,4,5', 'Atlantic/Rey
       message.currentEvent = `${moment.tz(currentEvent.date, "America/Los_Angeles").calendar()} PST, ${currentEventTrainer} is ${currentEventMessage} ${currentEvent.type === 'GeneralQA' ? "." : ""}${currentEvent.type === 'Series' ? `"${currentEvent.series.title}: ${currentEvent.title}".` : ""}${currentEvent.type === 'Other' ? `"${currentEvent.title}".` : ""} ${cta}`
 
       allUsers.map(u => {
-        const { phoneSMS, firstName, seriesChallengeSubmissions, attendedTalks } = u 
+        const { phoneSMS, firstName, seriesChallengeSubmissions, attendedTalks, email } = u 
 
         if (!phoneSMS) {
           return null

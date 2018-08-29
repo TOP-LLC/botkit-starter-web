@@ -18,7 +18,8 @@ return schedule.scheduleJob('daily schedule', '30 14 * * 3,4,5', 'Atlantic/Reykj
       const preLiveTalk = await getPreLiveTalk()
       console.log("Pre Live talk ", preLiveTalk)
       let formattedDate = preLiveTalk.date.slice(0, 10)
-      const isToday = _.find(formattedDate, o => o.date === moment.utc().format("YYYY-MM-DD"))
+      const isToday = formattedDate === moment().format("YYYY-MM-DD")
+      console.log("Is Today? ", isToday)
       if (isToday) {
         const updatedPreLiveTalk = await updatePreLiveTalk(preLiveTalk.id)
         console.log("Updated PreLive Talk ", updatedPreLiveTalk)
