@@ -15,7 +15,7 @@ module.exports = async function() {
       console.log("Live talk ", liveTalk)
       const updatedLiveTalk = await updateLiveTalk(liveTalk.id)
       console.log("Updated Live Talk to PostLive", updatedLiveTalk)
-      if (updatedLiveTalk.type === 'Series') {
+      if (updatedLiveTalk.data.updateTalk.type === 'Series') {
         // Get most recent Past Talk that is a Series
         console.log("Talk is a series, update challenges")
         const pastTalkChallenge = getCurrentChallenge()
