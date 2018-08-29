@@ -112,14 +112,14 @@ return schedule.scheduleJob('daily schedule', '30 14 * * 1,3,4,5', 'Atlantic/Rey
 
         client.messages.create({
           body: `${greeting}, ${_.includes(attendedTalks, o => o.id === currentEvent.id) ? firstName + "! " : firstName + ", " + message.prevEvent + " And"} ${message.currentEvent} ${challengeMessage ? ' And you already submitted your challenge. Nice work!' : challengeSet}`,
-          to: `+19517647045`,
+          to: `+1${phoneSMS}`,
           from: '+17874884263' 
         })
         .then((message) => console.log(message.sid, `${greeting}, ${firstName}! ${message.prevEvent} ${message.currentEvent}`));
 
         sgMail.setApiKey(process.env.SENDGRID_API_KEY);
         const msg = {
-          to: 'corymdecker@gmail.com',
+          to: email,
           from: 'support@topmortgage.org',
           subject: 'TOP mortgage training Daily Routine',
           text: `${greeting}, ${firstName + ", " + message.prevEvent + " And"} ${message.currentEvent} ${challengeMessage ? ' And you already submitted your challenge. Nice work!' : challengeSet}`,
