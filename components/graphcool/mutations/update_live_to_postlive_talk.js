@@ -13,6 +13,9 @@ module.exports = (talkId) => {
       status
       date
       type
+    	seriesChallenge {
+        id
+      }
     }
   }
   `;

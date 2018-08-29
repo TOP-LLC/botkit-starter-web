@@ -4,7 +4,7 @@ const debug = require('debug')('botkit:update_user_phone_number');
 module.exports = (challengeId) => {
   console.log('Change current PreLive Challenge to true',);
 
-  const mutationQuery = `mutation ($challengeId: ID!) {
+  const mutationQuery = `($challengeId: ID!) {
     updateSeriesChallenge(
       id: $challengeId
       current: true
@@ -21,7 +21,7 @@ module.exports = (challengeId) => {
   return lokkaClient
     .mutate(mutationQuery, vars)
     .then((result) => {
-      debug('Updated current PreLive challenge to current ', result);
+      debug('Updated current PreLive challenge to current ', result.updateSeriesChallenge);
       return { data: result };
     })
     .catch((error) => {

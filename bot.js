@@ -56,6 +56,7 @@ require(`${__dirname}/components/crons/daily_schedule.js`)();
 require(`${__dirname}/components/crons/top_live_update.js`)();
 require(`${__dirname}/components/crons/active_habit_update.js`)();
 require(`${__dirname}/components/crons/top_prelive_to_live_update.js`)();
+require(`${__dirname}/components/crons/top_live_to_postlive_update`)();
 
 // Testing functions
 // require(`${__dirname}/components/functions/sendTwilio.js`)();

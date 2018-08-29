@@ -2,8 +2,8 @@
 
 const getLiveTalk = require('../graphcool/queries/get_current_event')
 const updateLiveTalk = require('../graphcool/mutations/update_live_to_postlive_talk')
-const updatePreLiveChallenge = require('../graphcool/mutations/update_prelive_challenge')
-const updatePostLiveChallenge = require('../graphcool/mutations/update_postlive_challenge')
+const updateLiveChallenge = require('../graphcool/mutations/update_prelive_challenge')
+const updatePastChallenge = require('../graphcool/mutations/update_postlive_challenge')
 const getCurrentChallenge = require('../graphcool/queries/get_current_challenge')
 
 module.exports = async function() {
@@ -18,12 +18,12 @@ module.exports = async function() {
       if (updatedLiveTalk.data.updateTalk.type === 'Series') {
         // Get most recent Past Talk that is a Series
         console.log("Talk is a series, update challenges")
-        const pastTalkChallenge = getCurrentChallenge()
+        const pastTalkChallenge = await getCurrentChallenge()
         console.log("Past Talk challenge is ", pastTalkChallenge)
-        const updatedPastChallenge = await updatePostLiveChallenge(pastTalkChallenge.id)
-        const updatedPostLiveChallenge = await updatePreLiveChallenge(updatedLiveTalk.seriesChallenge.id)
-        console.log("Updated challenges ", [updatedPastChallenge, updatedPostLiveChallenge])
-        return [updatedPastChallenge, updatedPostLiveChallenge]
+        const updatedPastChallenge = await updatePastChallenge(pastTalkChallenge.id)
+        const updatedLiveChallenge = await updateLiveChallenge(updatedLiveTalk.data.updateTalk.seriesChallenge.id)
+        console.log("Updated challenges ", [updatedPastChallenge, updatedLiveChallenge])
+        return [updatedPastChallenge, updatedLiveChallenge]
       }
       return updatedLiveTalk
     } catch (err) {
