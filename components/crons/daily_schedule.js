@@ -27,8 +27,7 @@ const client = new twilio(accountSid, authToken);
 module.exports = function() {
 
 // Run every weekday morning at 10 am EST
-return schedule.scheduleJob('daily schedule', '30 14 * * 1,3,4,5', 'Atlantic/Reykjavik', function() {
-
+return schedule.scheduleJob('daily schedule', '30 14 * * 1,3,4,5,6', 'Atlantic/Reykjavik', function() {
   console.log(`Running daily schedule cron job at `, new Date())
 
   /*
@@ -88,11 +87,12 @@ return schedule.scheduleJob('daily schedule', '30 14 * * 1,3,4,5', 'Atlantic/Rey
           return null
         }
 
-        const dow = 2
+        console.log("DOW is ", moment().day())
+        let dow = moment().day()
         let challengeMessage = false;
         let challengeSet = '';
   
-        if (dow === 1 || dow === 5) {
+        if (dow === 1 || dow === 3 || dow === 5 || dow === 6) {
           // Create Challenge Message and add to schedule
     
           const formattedDates = allReminders.map(reminder => {
