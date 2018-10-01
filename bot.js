@@ -50,13 +50,13 @@ require(__dirname + "/components/plugin_dashbot.js")(controller)
 // require(`${__dirname}/components/crons/touchpoint_appointment_notification.js`)(controller);
 // require(`${__dirname}/components/crons/weighin_weekly_notification.js`)(controller);
 // require(`${__dirname}/components/crons/sprint_not_complete_reminder.js`)(controller);
-require(`${__dirname}/components/crons/daily_habit.js`)();
+// require(`${__dirname}/components/crons/daily_habit.js`)();
 // require(`${__dirname}/components/crons/daily_challenge.js`)();
 require(`${__dirname}/components/crons/daily_schedule.js`)();
-require(`${__dirname}/components/crons/top_live_update.js`)();
-require(`${__dirname}/components/crons/active_habit_update.js`)();
-require(`${__dirname}/components/crons/top_prelive_to_live_update.js`)();
-require(`${__dirname}/components/crons/top_live_to_postlive_update`)();
+// require(`${__dirname}/components/crons/top_live_update.js`)();
+// require(`${__dirname}/components/crons/active_habit_update.js`)();
+// require(`${__dirname}/components/crons/top_prelive_to_live_update.js`)();
+// require(`${__dirname}/components/crons/top_live_to_postlive_update`)();
 
 // Testing functions
 // require(`${__dirname}/components/functions/sendTwilio.js`)();

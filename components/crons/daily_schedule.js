@@ -10,6 +10,7 @@ const getCurrentEvent = require('./../graphcool/queries/get_current_event')
 const getPrevEvent = require('./../graphcool/queries/get_prev_event')
 const getCurrentChallenge = require('./../graphcool/queries/get_current_challenge');
 const getAllReminders = require('./../graphcool/queries/get_all_reminders');
+const getWeeklySchedule = require('./../graphcool/queries/get_weekly_schedule');
 
 const greetings = ["What's up", 'Hey', 'Boom', 'Buenos dias', 'Yo', 'Listen up', 'Salutations', 'Hola', 'Aloha'];
 const randomNumber = Math.floor(Math.random() * greetings.length);
@@ -27,7 +28,7 @@ const client = new twilio(accountSid, authToken);
 module.exports = function() {
 
 // Run every weekday morning at 10 am EST
-return schedule.scheduleJob('daily schedule', '30 14 * * 1,3,4,5,6', 'Atlantic/Reykjavik', function() {
+// return schedule.scheduleJob('daily schedule', '30 14 * * 1,2,3,4,5,6', 'Atlantic/Reykjavik', function() {
 
   console.log(`Running daily schedule cron job at `, new Date())
 
@@ -42,7 +43,7 @@ return schedule.scheduleJob('daily schedule', '30 14 * * 1,3,4,5,6', 'Atlantic/R
 
   const runEverything = async () => {
 
-    const sendAllReminders = async (allUsers, prevEvent, currentEvent, currentChallenge, allReminders) => {
+    const sendAllReminders = async (allUsers, prevEvent, currentEvent, currentChallenge, allReminders, weeklySchedule) => {
 
       let message = {}
       let currentEventMessage = ''
@@ -93,6 +94,7 @@ return schedule.scheduleJob('daily schedule', '30 14 * * 1,3,4,5,6', 'Atlantic/R
         let dow = moment().day()
         let challengeMessage = false;
         let challengeSet = '';
+        let scheduleEmailMessage = '';
   
         if (dow === 1 || dow === 3 || dow === 5 || dow === 6) {
           // Create Challenge Message and add to schedule
@@ -107,9 +109,31 @@ return schedule.scheduleJob('daily schedule', '30 14 * * 1,3,4,5,6', 'Atlantic/R
           console.log("Current reminder is ", currentReminder)
   
           challengeMessage = _.includes(seriesChallengeSubmissions, o => o.id === currentChallenge.id)
-          challengeSet = `Your challenge: "${currentChallenge.description}" is due ${moment.tz(currentChallenge.dueDate, "America/Los_Angeles").calendar()}. Today's challenge tip: ${currentReminder.message}`
+          challengeSet = `Your challenge: "${currentChallenge.description}" is <strong>due ${moment.tz(currentChallenge.dueDate, "America/Los_Angeles").calendar()} PST</strong>. <br />Today's challenge tip: ${currentReminder.message}`
         } else {
           challengeMessage = false
+        }
+
+        // If Monday, send the weekly Talk Schedule
+        if (dow === 1) {
+          scheduleEmailMessage = `
+            <p>This week's training schedule: 
+              <ul>
+                ${
+                  weeklySchedule.map(talk => {
+                    return `
+                      <li>
+                        <strong>${moment.tz(talk.date, "America/Los_Angeles").format("dddd, MMMM Do, h:mm a")} PST</strong>: 
+                        ${talk.title} with ${talk.trainer.firstName + " " + talk.trainer.lastName}
+                      </li>
+                      `
+                  })
+                }
+              </ul>
+            </p>
+          `
+        } else {
+          weeklySchedule = false
         }
 
         client.messages.create({
@@ -125,9 +149,9 @@ return schedule.scheduleJob('daily schedule', '30 14 * * 1,3,4,5,6', 'Atlantic/R
           from: 'support@topmortgage.org',
           subject: 'TOP mortgage training Daily Routine',
           text: `${greeting}, ${firstName + ", " + message.prevEvent + " And"} ${message.currentEvent} ${challengeMessage ? ' And you already submitted your challenge. Nice work!' : challengeSet}`,
-          html: `<p>${greeting}, ${_.includes(attendedTalks, o => o.id === currentEvent.id) ? firstName + "! " : firstName + ", " + message.prevEvent}</p> <p>${message.currentEvent}</p> <p>${challengeMessage ? ' And you already submitted your challenge. Nice work!' : challengeSet}</p> <p><a href="https://www.topmortgage.co">Log in now to check it all out!<a></p>`,
+          html: `<p>${greeting}, ${_.includes(attendedTalks, o => o.id === currentEvent.id) ? firstName + "! " : firstName + ", " + message.prevEvent}</p> <p>${message.currentEvent}</p> <p>${challengeMessage ? ' And you already submitted your challenge. Nice work!' : challengeSet}</p> ${weeklySchedule ? scheduleEmailMessage : `` } <p><a href="https://www.topmortgage.co">Log in now to check it all out!<a></p>`,
         };
-        sgMail.send(msg).then(message => console.log(message));
+        sgMail.send(msg).then(message => console.log(message.body));
 
       });
     }
@@ -141,7 +165,8 @@ return schedule.scheduleJob('daily schedule', '30 14 * * 1,3,4,5,6', 'Atlantic/R
       console.log("Current event is, ", currentEvent)
       const currentChallenge = await getCurrentChallenge()
       const allReminders = await getAllReminders()
-      const allReports = await sendAllReminders(allUsers, prevEvent, currentEvent, currentChallenge, allReminders)
+      const weeklySchedule = await getWeeklySchedule()
+      const allReports = await sendAllReminders(allUsers, prevEvent, currentEvent, currentChallenge, allReminders, weeklySchedule)
       console.log("Finished with all schedules ", allReports)
       return allReports
     } catch (err) {
@@ -152,6 +177,6 @@ return schedule.scheduleJob('daily schedule', '30 14 * * 1,3,4,5,6', 'Atlantic/R
   }
   return runEverything().then(result => console.log(result)).catch((err) => console.log("Error running everything in daily schedule ", err)) 
 
-});
+// });
 
 }

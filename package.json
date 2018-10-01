@@ -5,7 +5,7 @@
   "main": "bot.js",
   "scripts": {
     "start": "DEBUG=* set NODE_ENV=dev nodemon bot.js",
-    "dev": "set NODE_ENV=dev && set DEBUG=* && nodemon bot.js"
+    "dev": "set NODE_ENV=dev && nodemon bot.js"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
