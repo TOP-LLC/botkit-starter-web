@@ -27,7 +27,7 @@ const client = new twilio(accountSid, authToken);
 module.exports = function() {
 
 // Run every weekday morning at 10 am EST
-return schedule.scheduleJob('daily schedule', '30 14 * * 1,3,4,5', 'Atlantic/Reykjavik', function() {
+return schedule.scheduleJob('daily schedule', '30 14 * * 1,3,4,5,6', 'Atlantic/Reykjavik', function() {
 
   console.log(`Running daily schedule cron job at `, new Date())
 
@@ -88,11 +88,13 @@ return schedule.scheduleJob('daily schedule', '30 14 * * 1,3,4,5', 'Atlantic/Rey
           return null
         }
 
-        const dow = 2
+        console.log("DOW is ", moment().day())
+
+        let dow = moment().day()
         let challengeMessage = false;
         let challengeSet = '';
   
-        if (dow === 1 || dow === 5) {
+        if (dow === 1 || dow === 3 || dow === 5 || dow === 6) {
           // Create Challenge Message and add to schedule
     
           const formattedDates = allReminders.map(reminder => {
@@ -112,14 +114,14 @@ return schedule.scheduleJob('daily schedule', '30 14 * * 1,3,4,5', 'Atlantic/Rey
 
         client.messages.create({
           body: `${greeting}, ${_.includes(attendedTalks, o => o.id === currentEvent.id) ? firstName + "! " : firstName + ", " + message.prevEvent + " And"} ${message.currentEvent} ${challengeMessage ? ' And you already submitted your challenge. Nice work!' : challengeSet}`,
-          to: `+1${phoneSMS}`,
+          to: `+19517647045`,
           from: '+17874884263' 
         })
         .then((message) => console.log(message.sid, `${greeting}, ${firstName}! ${message.prevEvent} ${message.currentEvent}`));
 
         sgMail.setApiKey(process.env.SENDGRID_API_KEY);
         const msg = {
-          to: email,
+          to: "corymdecker@gmail.com",
           from: 'support@topmortgage.org',
           subject: 'TOP mortgage training Daily Routine',
           text: `${greeting}, ${firstName + ", " + message.prevEvent + " And"} ${message.currentEvent} ${challengeMessage ? ' And you already submitted your challenge. Nice work!' : challengeSet}`,
