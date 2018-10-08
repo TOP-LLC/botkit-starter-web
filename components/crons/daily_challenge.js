@@ -8,7 +8,7 @@ const getAllActiveUsers = require('./../graphcool/queries/get_all_enrolled_users
 const getCurrentChallenge = require('./../graphcool/queries/get_current_challenge');
 const getAllReminders = require('./../graphcool/queries/get_all_reminders');
 
-const greetings = ["What's up", 'Hey', 'Boom', 'Buenos dias', 'Yo', 'Listen up', 'Salutations', 'Hola', 'Aloha'];
+const greetings = ["Greetings", 'Hey', 'Buenos dias', 'Salutations', 'Hola', 'Aloha', "Hello", "Good day"];
 
 const randomNumber = Math.floor(Math.random() * greetings.length);
 

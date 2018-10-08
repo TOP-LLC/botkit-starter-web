@@ -12,7 +12,7 @@ const getCurrentChallenge = require('./../graphcool/queries/get_current_challeng
 const getAllReminders = require('./../graphcool/queries/get_all_reminders');
 const getWeeklySchedule = require('./../graphcool/queries/get_weekly_schedule');
 
-const greetings = ["What's up", 'Hey', 'Boom', 'Buenos dias', 'Yo', 'Listen up', 'Salutations', 'Hola', 'Aloha'];
+const greetings = ["Greetings", 'Hey', 'Buenos dias', 'Salutations', 'Hola', 'Aloha', "Hello", "Good day"];
 const randomNumber = Math.floor(Math.random() * greetings.length);
 const greeting = greetings[randomNumber];
 
@@ -28,7 +28,7 @@ const client = new twilio(accountSid, authToken);
 module.exports = function() {
 
 // Run every weekday morning at 10 am EST
-return schedule.scheduleJob('daily schedule', '30 14 * * 1,2,3,4,5,6', 'Atlantic/Reykjavik', function() {
+// return schedule.scheduleJob('daily schedule', '30 14 * * 1,2,3,4,5,6', 'Atlantic/Reykjavik', function() {
   console.log(`Running daily schedule cron job at `, new Date())
 
   /*
@@ -91,6 +91,7 @@ return schedule.scheduleJob('daily schedule', '30 14 * * 1,2,3,4,5,6', 'Atlantic
         let dow = moment().day()
         let challengeMessage = false;
         let challengeSet = '';
+        let challengeTip = '';
         let scheduleEmailMessage = '';
   
         if (dow === 1 || dow === 3 || dow === 5 || dow === 6) {
@@ -106,7 +107,8 @@ return schedule.scheduleJob('daily schedule', '30 14 * * 1,2,3,4,5,6', 'Atlantic
           console.log("Current reminder is ", currentReminder)
   
           challengeMessage = _.includes(seriesChallengeSubmissions, o => o.id === currentChallenge.id)
-          challengeSet = `Your challenge: "${currentChallenge.description}" is <strong>due ${moment.tz(currentChallenge.dueDate, "America/Los_Angeles").calendar()} PST</strong>. <br />Today's challenge tip: ${currentReminder.message}`        
+          challengeSet = `Your challenge: "${currentChallenge.description}" ${dow === 2 ? "was" : "is"} due ${moment.tz(currentChallenge.dueDate, "America/Los_Angeles").calendar()} PST.`        
+          challengeTip = `Today's challenge tip: ${currentReminder.message}`
         } else {
           challengeMessage = false
         }
@@ -114,14 +116,15 @@ return schedule.scheduleJob('daily schedule', '30 14 * * 1,2,3,4,5,6', 'Atlantic
         // If Monday, send the weekly Talk Schedule
         if (dow === 1) {
           scheduleEmailMessage = `
-            <p>This week's training schedule: 
+            <p><h3>This week's training schedule:</h3>
               <ul>
                 ${
                   weeklySchedule.map(talk => {
+                    console.log("Talk is ", talk)
                     return `
                       <li>
-                        <strong>${moment.tz(talk.date, "America/Los_Angeles").format("dddd, MMMM Do, h:mm a")} PST</strong>: 
-                        ${talk.title} with ${talk.trainer.firstName + " " + talk.trainer.lastName}
+                        <h4><strong>${moment.tz(talk.date, "America/Los_Angeles").format("dddd, MMMM Do, h:mm a")} PST</strong>: 
+                        ${talk.title} with ${talk.trainer.firstName + " " + talk.trainer.lastName}</h4>
                       </li>
                       `
                   })
@@ -145,8 +148,8 @@ return schedule.scheduleJob('daily schedule', '30 14 * * 1,2,3,4,5,6', 'Atlantic
           to: email,
           from: 'support@topmortgage.org',
           subject: 'TOP mortgage training Daily Routine',
-          text: `${greeting}, ${firstName + ", " + message.prevEvent + " And"} ${message.currentEvent} ${challengeMessage ? ' And you already submitted your challenge. Nice work!' : challengeSet}`,
-          html: `<p>${greeting}, ${_.includes(attendedTalks, o => o.id === currentEvent.id) ? firstName + "! " : firstName + ", " + message.prevEvent}</p> <p>${message.currentEvent}</p> <p>${challengeMessage ? ' And you already submitted your challenge. Nice work!' : challengeSet}</p> ${weeklySchedule ? scheduleEmailMessage : `` } <p><a href="https://www.topmortgage.co">Log in now to check it all out!<a></p>`,        };
+          text: `${greeting}, ${firstName + ", " + message.prevEvent + " And"} ${message.currentEvent} ${challengeMessage ? ' And you already submitted your challenge. Nice work!' : challengeSet} <br />${challengeTip}`,
+          html: `<p>${greeting}, ${_.includes(attendedTalks, o => o.id === currentEvent.id) ? firstName + "! " : firstName + ", " + message.prevEvent}</p> <p>${message.currentEvent}</p> <p><strong>${challengeMessage ? ' And you already submitted your challenge. Nice work!' : challengeSet}</strong></p> <p>${challengeTip}</p> ${weeklySchedule ? scheduleEmailMessage : `` }</p> <p><a href="https://www.topmortgage.co">Log in now to check it all out!<a></p>`,        };
         sgMail.send(msg).then(message => console.log(message.body));
 
       });
@@ -173,6 +176,6 @@ return schedule.scheduleJob('daily schedule', '30 14 * * 1,2,3,4,5,6', 'Atlantic
   }
   return runEverything().then(result => console.log(result)).catch((err) => console.log("Error running everything in daily schedule ", err)) 
 
-});
+// });
 
 }

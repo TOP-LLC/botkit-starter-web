@@ -7,7 +7,7 @@ const getAllActiveUsers = require('./../graphcool/queries/get_all_active_users_i
 
 // Creating random greeting
 
-const greetings = ["What's up", 'Hey', 'Boom', 'Buenos dias', 'Yo', 'Listen up'];
+const greetings = ["Greetings", 'Hey', 'Buenos dias', 'Salutations', 'Hola', 'Aloha', "Hello", "Good day"];
 
 const randomNumber = Math.floor(Math.random() * greetings.length);
 

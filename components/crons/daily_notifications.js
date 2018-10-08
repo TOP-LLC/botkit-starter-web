@@ -8,9 +8,7 @@ const getActiveHabit = require('../graphcool/queries/get_active_habit');
 const getDailyHabit = require('../functions/dailyHabit');
 const getDailySchedule = require('../functions/dailySchedule');
 const getDailyChallenge = require('../functions/dailyChallenge');
-
-const greetings = ["What's up", 'Hey', 'Boom', 'Buenos dias', 'Yo', 'Listen up', 'Salutations', 'Hola', 'Aloha'];
-
+const greetings = ["Greetings", 'Hey', 'Buenos dias', 'Salutations', 'Hola', 'Aloha', "Hello", "Good day"];
 const randomNumber = Math.floor(Math.random() * greetings.length);
 
 const greeting = greetings[randomNumber];
