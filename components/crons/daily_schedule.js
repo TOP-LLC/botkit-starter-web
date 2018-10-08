@@ -28,7 +28,7 @@ const client = new twilio(accountSid, authToken);
 module.exports = function() {
 
 // Run every weekday morning at 10 am EST
-// return schedule.scheduleJob('daily schedule', '30 14 * * 1,2,3,4,5,6', 'Atlantic/Reykjavik', function() {
+return schedule.scheduleJob('daily schedule', '30 14 * * 1,2,3,4,5,6', 'Atlantic/Reykjavik', function() {
   console.log(`Running daily schedule cron job at `, new Date())
 
   /*
@@ -114,7 +114,7 @@ module.exports = function() {
         }
 
         // If Monday, send the weekly Talk Schedule
-        if (dow === 1) {
+        if (dow === 18) {
           scheduleEmailMessage = `
             <p><h3>This week's training schedule:</h3>
               <ul>
@@ -176,6 +176,6 @@ module.exports = function() {
   }
   return runEverything().then(result => console.log(result)).catch((err) => console.log("Error running everything in daily schedule ", err)) 
 
-// });
+});
 
 }
