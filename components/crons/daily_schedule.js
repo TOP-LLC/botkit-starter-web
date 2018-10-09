@@ -114,7 +114,7 @@ return schedule.scheduleJob('daily schedule', '30 14 * * 1,2,3,4,5,6', 'Atlantic
         }
 
         // If Monday, send the weekly Talk Schedule
-        if (dow === 18) {
+        if (dow === 1) {
           scheduleEmailMessage = `
             <p><h3>This week's training schedule:</h3>
               <ul>
