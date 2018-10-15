@@ -79,13 +79,12 @@ return schedule.scheduleJob('daily schedule', '30 13 * * 3,4,5', 'Atlantic/Reykj
       let formattedDate = preLiveTalk.date.slice(0, 10)
       let isToday = formattedDate === moment().format("YYYY-MM-DD")
       console.log("Is Today? ", isToday)
-      isToday = true
       if (isToday) {
-        // const updatedPreLiveTalk = await updatePreLiveTalk(preLiveTalk.id)
-        // console.log("Updated PreLive Talk ", updatedPreLiveTalk)
+        const updatedPreLiveTalk = await updatePreLiveTalk(preLiveTalk.id)
+        console.log("Updated PreLive Talk ", updatedPreLiveTalk)
         const allUsers = await getAllActiveUsers()
         const sentNotifications = await sendNotifications(preLiveTalk, allUsers)
-        return {data: {sentNotifications}}
+        return {data: {sentNotifications, updatedPreLiveTalk}}
       }
       return console.log("No Live event today ", preLiveTalk)
     } catch (err) {
