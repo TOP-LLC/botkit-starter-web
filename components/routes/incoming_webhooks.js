@@ -17,6 +17,45 @@ const randomGreeting = require("./../functions/randomGreeting")
 const debug = require("debug")("botkit:incoming_webhooks")
 
 module.exports = (webserver, controller) => {
+
+  // Trigger when Demio Webinar is complete
+  debug("Configured /talkended url")
+  server.post("/talkended", async (req, res) => {
+      debug("Running not talk ended webhook", req)
+
+      const {
+          secret,
+          ended,
+          data
+      } = req.headers
+
+      console.log("Talk is ", data)
+
+      if (secret === "thelittlefoots") {
+          try {
+              const liveTalk = await getCurrentTalk()
+              if (liveTalk) {
+                  const updatedTalk = await updateLiveTalk(liveTalk.id)
+                  console.log("Updated Live Talk is ", updatedTalk)
+                  res.status(200)
+                  res.end("Live Talk updated ", updatedTalk)
+              } else {
+                  console.log("No Live talk")
+                  res.status(200)
+                  res.end("No event found, ignoring or error")
+              }
+          } catch (err) {
+              console.log("Got an error in Talk ended ", err)
+              return {
+                  data: err
+              }
+          }
+      } else {
+          res.status(200)
+          res.end("No talk found matching those details")
+      }
+  })
+
   debug("Configured zapier Live to Past url")
   webserver.post("/livetopast", (req, res) => {
     console.log("Got the following data ", req)
