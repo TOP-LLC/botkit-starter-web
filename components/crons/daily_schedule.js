@@ -51,7 +51,7 @@ return schedule.scheduleJob('daily schedule', '30 14 * * 1,2,3,4,5,6', 'Atlantic
 
       switch (currentEvent.type) {
         case "Series":
-        currentEventMessage = 'continuing his TOP Live Talk series'
+        currentEventMessage = 'teaching the TOP Live Talk series'
         break;
         case "Other":
         currentEventMessage = 'hosting a Business Booster'
@@ -65,7 +65,7 @@ return schedule.scheduleJob('daily schedule', '30 14 * * 1,2,3,4,5,6', 'Atlantic
 
       switch (prevEvent.type) {
         case "Series":
-        prevEventMessage = 'continued his TOP Live Talk series '
+        prevEventMessage = 'taught his TOP Live Talk series '
         break;
         case "Other":
         prevEventMessage = 'hosted a Business Booster '
@@ -78,7 +78,7 @@ return schedule.scheduleJob('daily schedule', '30 14 * * 1,2,3,4,5,6', 'Atlantic
         }
 
       message.prevEvent = `${moment.tz(prevEvent.date, "America/Los_Angeles").fromNow()} ${prevEventTrainer} ${prevEventMessage}${prevEvent.type === 'GeneralQA' ? "." : ""}${prevEvent.type === 'Series' ? `"${prevEvent.series.title}: ${prevEvent.title}".` : ""}${prevEvent.type === 'Other' ? `"${prevEvent.title}".` : ""} Check the recording if you missed it!`
-      message.currentEvent = `${moment.tz(currentEvent.date, "America/Los_Angeles").calendar()} PST, ${currentEventTrainer} is ${currentEventMessage} ${currentEvent.type === 'GeneralQA' ? "." : ""}${currentEvent.type === 'Series' ? `"${currentEvent.series.title}: ${currentEvent.title}".` : ""}${currentEvent.type === 'Other' ? `"${currentEvent.title}".` : ""} ${cta}`
+      message.currentEvent = `${moment.tz(currentEvent.date, "America/Los_Angeles").calendar()}, ${currentEventTrainer} is ${currentEventMessage} ${currentEvent.type === 'GeneralQA' ? "." : ""}${currentEvent.type === 'Series' ? `"${currentEvent.series.title}: ${currentEvent.title}".` : ""}${currentEvent.type === 'Other' ? `"${currentEvent.title}".` : ""} ${cta}`
 
       allUsers.map(u => {
         const { phoneSMS, firstName, seriesChallengeSubmissions, attendedTalks, email } = u 
